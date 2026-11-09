@@ -1,0 +1,8 @@
+{
+  "name": "TypeStrike — Cyber Typing Arcade",
+  "description": "Fast-paced cyber keyboard typing arcade defense. Type words to fire plasma lasers, trigger EMP chain blasts, unleash combo overdrive, and defend the grid.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

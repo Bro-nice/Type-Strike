@@ -1,0 +1,1861 @@
+MASTER PROMPT: BUILD THE ULTIMATE TOUCH-TYPING ADVENTURE GAME
+1. YOUR ROLE AND MISSION
+
+You are an elite multidisciplinary team consisting of:
+
+A senior full-stack software engineer.
+A world-class game designer.
+A human-computer interaction specialist.
+A learning-science and cognitive psychology specialist.
+A touch-typing and keyboard ergonomics instructor.
+A behavioral game-design specialist.
+A UI/UX designer specializing in premium interactive applications.
+A motion designer and sound designer.
+A quality assurance engineer.
+An accessibility and performance specialist.
+
+Your mission is to design and build a complete, functional, visually spectacular, highly engaging typing-learning game that transforms an ordinary beginner or intermediate typist into a confident, fast, accurate touch typist who can type naturally without looking at the keyboard.
+
+The application must be an actual playable game, not a landing page, a static dashboard, a superficial typing test, or a prototype full of nonfunctional buttons.
+
+The player should feel that they are exploring an exciting game world, completing missions, developing extraordinary abilities, defeating challenges, unlocking achievements, and mastering a valuable real-world skill.
+
+Behind this entertaining experience, the application must function as a structured, adaptive typing curriculum grounded in established principles of learning science.
+
+The central objective is:
+
+Teach the player to type accurately, comfortably, and increasingly quickly through automatic finger movements without needing to look at the keyboard.
+
+Every major feature must support this objective, directly or indirectly.
+
+Do not sacrifice learning effectiveness for superficial entertainment. Instead, make effective practice so engaging, satisfying, varied, and rewarding that the player genuinely wants to practice consistently.
+
+Do not merely explain how you would build this product. Build it.
+
+If you have access to a coding environment, create the actual application files, implement the game, run the available checks, fix errors, and leave the project in a usable state.
+
+When a design decision is necessary, choose the option that best balances learning effectiveness, enjoyment, accessibility, performance, and long-term maintainability.
+
+2. PRODUCT VISION AND CORE PHILOSOPHY
+
+Create a premium-quality touch-typing adventure called "KEYQUEST: The Art of Touch Typing."
+
+The name is provisional and can be improved if you devise a more compelling original identity.
+
+Imagine the combination of:
+
+The satisfying progression of a well-designed role-playing game.
+The immediacy of an arcade game.
+The structured mastery of a musical instrument training application.
+The personalization of an adaptive private tutor.
+The excitement of unlocking new worlds and abilities.
+The clarity of a premium productivity application.
+The visual polish of a modern indie game.
+
+The application should make practicing typing feel like an activity the player chooses for pleasure rather than a tedious task they must force themselves to complete.
+
+Build around five principles:
+
+Accuracy before speed.
+Correct finger movements before memorized visual patterns.
+Gradual challenge rather than overwhelming difficulty.
+Active practice and immediate, useful feedback.
+Sustainable motivation rather than guilt, pressure, or punishment.
+
+The player must experience a compelling feedback loop:
+
+Practice → Receive meaningful feedback → Improve a specific skill → Complete a challenge → Unlock a reward → See measurable progress → Become curious about the next challenge → Practice again.
+
+Avoid making the game addictive through manipulative dark patterns. Use healthy engagement, meaningful progress, satisfying mastery, player autonomy, and enjoyable challenges. Do not use artificial scarcity, deceptive rewards, punitive streak resets, or shame-based messages.
+
+The game should be delightful even when the player is learning difficult keys or making mistakes.
+
+3. DEFINE SUCCESS CORRECTLY
+
+The application must not optimize merely for the highest displayed words-per-minute score.
+
+It must optimize for durable, transferable touch-typing ability.
+
+Track and distinguish the following:
+
+Raw typing speed.
+Corrected typing speed.
+Net words per minute.
+Character accuracy.
+Word accuracy.
+Uncorrected errors.
+Corrected errors.
+Backspace frequency.
+Error rate by key.
+Error rate by finger.
+Error rate by key transition.
+Typing rhythm and consistency.
+Performance on unfamiliar practice material.
+Performance without keyboard visual assistance.
+Performance after a delay between practice sessions.
+Performance on punctuation, capitalization, numbers, and symbols.
+Self-reported comfort and difficulty where useful.
+
+Do not allow a player to achieve a prestigious typing rank simply by typing rapidly and inaccurately.
+
+Create separate achievements for speed, precision, consistency, endurance, and genuine touch-typing mastery.
+
+The most important achievement is becoming capable of typing real text accurately without looking down at the keyboard.
+
+4. SCIENTIFICALLY INFORMED LEARNING ENGINE
+
+Implement an instructional system based on established learning principles.
+
+Do not claim that every mechanic is scientifically proven or that a particular training schedule is universally optimal. Use evidence-informed techniques, make instructional decisions transparent, and validate their effectiveness through actual performance data.
+
+4.1 Deliberate practice
+
+Every practice session should have a specific learning objective.
+
+Examples:
+
+Learn the keys F and J.
+Master the home-row keys.
+Improve the left-hand index finger.
+Reduce errors on the R-T transition.
+Learn to reach the number row without looking.
+Improve punctuation accuracy.
+Increase speed while maintaining a specified accuracy threshold.
+
+At the beginning of a session, briefly explain what the player is practicing and why.
+
+At the end, summarize what improved, what remains difficult, and what to practice next.
+
+Avoid endless repetitions that do not target a meaningful weakness.
+
+4.2 Gradual scaffolding and fading assistance
+
+Start with sufficient guidance for the player to understand correct finger placement.
+
+Initially, provide optional visual assistance, including:
+
+A clearly illustrated keyboard.
+Home-row highlighting.
+Finger-to-key color coding.
+Suggested finger labels.
+Short movement demonstrations.
+A clear explanation of which finger should press each key.
+
+As the player improves, progressively reduce assistance.
+
+Create explicit assistance stages:
+
+Stage A: Full guidance.
+
+The keyboard visualization shows the target key, the assigned finger, and the next movement.
+
+Stage B: Reduced guidance.
+
+Show the target key, but no longer highlight the finger.
+
+Stage C: Minimal guidance.
+
+Show the target character in the exercise while keeping the keyboard diagram available only on request.
+
+Stage D: Blind practice.
+
+Hide the on-screen keyboard during the exercise. The player must rely on tactile memory and finger position.
+
+Stage E: Real-world transfer.
+
+Practice sentences, paragraphs, messages, and unfamiliar text without a visible keyboard diagram.
+
+Do not advance the player merely because they have completed a lesson. Advance based on demonstrated accuracy, consistency, and independent performance.
+
+Allow the player to temporarily restore assistance when a new skill becomes difficult.
+
+4.3 Retrieval practice
+
+Make players actively recall key locations rather than merely watch demonstrations.
+
+Use exercises such as:
+
+A character appears, and the player must press the corresponding key.
+A short word appears, and the player types it without assistance.
+A familiar sequence reappears after a delay.
+A previously learned key is mixed into a new lesson.
+The player must complete a sentence containing keys learned several days earlier.
+
+Do not rely entirely on following visible letters. Encourage recall of the correct finger movement.
+
+4.4 Spaced practice and retention
+
+Implement a lightweight scheduling system that brings previously learned keys and sequences back into later sessions.
+
+Reintroduce skills after progressively longer intervals when performance supports it.
+
+For example, a skill might be revisited later in the same session, during the next session, after a day, and after several days.
+
+These intervals must be configurable and adaptive, not presented as universally optimal.
+
+If a player repeatedly struggles with a skill, bring it back sooner.
+
+If a player consistently performs well, reduce its frequency while continuing occasional review.
+
+Keep an internal mastery record for each key, finger, sequence, and skill category.
+
+4.5 Interleaving
+
+Once the player has learned a sufficient collection of keys, mix old and new skills.
+
+For example, a lesson should not contain only the letter E repeated dozens of times. It should eventually mix E with previously learned letters, varied words, and different finger transitions.
+
+Start with simpler blocked practice when a movement is entirely new. Introduce interleaving as familiarity improves.
+
+Use interleaving to help the player recognize which movement is required in different contexts.
+
+4.6 Immediate, informative feedback
+
+Feedback should be fast, clear, and emotionally supportive.
+
+When the player makes an error:
+
+Identify the error without insulting or embarrassing them.
+Show the correct target.
+Explain the likely finger movement when appropriate.
+Offer a brief retry or a targeted micro-exercise.
+Preserve the flow of the game when possible.
+
+When the player succeeds:
+
+Acknowledge correct execution.
+Reinforce the relevant skill.
+Show meaningful improvement when supported by data.
+
+Do not interrupt every successful keystroke with a large message.
+
+Keep feedback subtle during fluent typing and more detailed when the same mistake repeatedly occurs.
+
+4.7 Adaptive difficulty
+
+Implement a dynamic difficulty system based on the player's actual performance.
+
+Measure performance across a rolling window of recent attempts.
+
+Use the following as initial configurable thresholds, not universal scientific laws:
+
+Accuracy below 90%: simplify the exercise and provide more support.
+Accuracy between 90% and 94%: continue at a manageable level and target recurring mistakes.
+Accuracy between 95% and 97%: maintain difficulty or gradually introduce more variety.
+Accuracy at or above 98% across repeated attempts: consider introducing a harder challenge.
+
+Require sufficient sample sizes before making major adjustments.
+
+Do not increase difficulty because of one unusually successful run.
+
+When increasing difficulty, change one major variable at a time whenever practical:
+
+Number of available keys.
+Word length.
+Typing speed target.
+Sentence complexity.
+Punctuation frequency.
+Capitalization requirements.
+Presence of numbers and symbols.
+Time pressure.
+Amount of visual assistance.
+Length of the exercise.
+
+If performance deteriorates substantially, temporarily simplify the exercise.
+
+The system should find a productive challenge level: difficult enough to encourage improvement, but manageable enough that the player can repeatedly execute correct movements.
+
+4.8 Motor learning and touch typing
+
+Teach the correct finger assignment for every supported key.
+
+For a conventional US QWERTY keyboard, teach the standard home-row position:
+
+Left little finger: A.
+Left ring finger: S.
+Left middle finger: D.
+Left index finger: F.
+Right index finger: J.
+Right middle finger: K.
+Right ring finger: L.
+Right little finger: semicolon.
+
+Teach the thumbs to operate the spacebar.
+
+Explain the raised tactile markers on F and J and use them as the foundation for returning to the home position.
+
+Teach upward and downward reaches from the home row, gradually expanding to the top and bottom letter rows.
+
+Teach the number row, punctuation, capitalization, and symbols after the player has established sufficient control over the letter keys.
+
+Support different physical keyboards, layouts, and accessibility needs. Do not assume every user has a US QWERTY keyboard.
+
+If a player uses another layout, adjust the curriculum rather than teaching incorrect finger assignments for that layout.
+
+4.9 Avoid reinforcing bad habits
+
+Never reward speed in a way that encourages random finger movements, constant keyboard glancing, or uncontrolled errors.
+
+If the player repeatedly uses the wrong finger, provide targeted guidance.
+
+If the player uses two fingers to hunt for keys, introduce finger-specific exercises and gradually reduce assistance.
+
+Do not assume the game can directly detect whether the player is looking down. Without a camera-based system, it cannot reliably know where the player is looking.
+
+Instead, use optional self-reports, hidden-keyboard exercises, and performance on unfamiliar text to estimate independent typing ability.
+
+Never activate a camera or microphone for this purpose without explicit, informed permission.
+
+5. BUILD A COMPLETE CURRICULUM
+
+Design the game as a journey through themed worlds.
+
+Every world must have a defined learning objective, structured lessons, practice missions, a mastery test, and an unlockable reward.
+
+World 1: The Awakening
+
+Purpose: Introduce the game and establish the player's baseline.
+
+Activities:
+
+Explain the goal of touch typing.
+Ask which keyboard layout the player uses.
+Ask whether they are a beginner, intermediate typist, or experienced typist.
+Offer an optional short diagnostic.
+Identify initial accuracy, approximate speed, and common errors.
+Introduce the home-row concept.
+Explain how to use F and J as tactile anchors.
+
+The diagnostic should be short and encouraging. It must not overwhelm beginners.
+
+Reward: The First Key emblem.
+
+World 2: The Home-Row Sanctuary
+
+Purpose: Build familiarity with the home-row keys.
+
+Introduce keys progressively, beginning with comfortable and manageable combinations.
+
+Activities:
+
+Key recognition.
+Assigned-finger practice.
+Short sequences.
+Alternating hands.
+Home-position recovery.
+Short, controlled words.
+Gentle rhythm exercises.
+
+The player should understand where the fingers belong without memorizing a sequence of screenshots.
+
+Reward: Home-Row Guardian title.
+
+World 3: The Upper Kingdom
+
+Purpose: Learn top-row reaches.
+
+Introduce the upper row gradually and combine it with previously learned keys.
+
+Teach the player to move the appropriate finger while maintaining reasonable home-position awareness.
+
+Include common letter transitions and short words that require different fingers.
+
+Reward: Precision Archer badge.
+
+World 4: The Lower Depths
+
+Purpose: Learn the bottom row.
+
+Use short movement drills and increasingly varied combinations.
+
+Provide extra practice for difficult reaches and less familiar finger movements.
+
+Mix the bottom row with home-row and top-row keys once appropriate.
+
+Reward: Deep-Key Explorer badge.
+
+World 5: The Word Forge
+
+Purpose: Convert key familiarity into real word typing.
+
+Introduce:
+
+Short, common words.
+Words of varying lengths.
+Alternating hand patterns.
+Repeated letters.
+Frequent letter combinations.
+Common prefixes and suffixes.
+Gradually increasing complexity.
+
+Do not use meaningless random-letter strings as the primary experience.
+
+Use short artificial sequences only when they isolate a specific movement that needs practice.
+
+Reward: Wordsmith rank.
+
+World 6: The Sentence Citadel
+
+Purpose: Develop fluidity across real sentences.
+
+Introduce:
+
+Capitalization.
+Periods and commas.
+Question marks.
+Apostrophes.
+Quotation marks.
+Mixed sentence lengths.
+Natural punctuation patterns.
+
+Gradually introduce realistic text that requires the player to maintain a steady rhythm.
+
+Reward: Sentence Architect title.
+
+World 7: The Symbol Labyrinth
+
+Purpose: Build competence with numbers and symbols.
+
+Introduce numbers, punctuation, and common symbols progressively.
+
+Use exercises relevant to real tasks:
+
+Dates.
+Times.
+Prices.
+Short calculations typed as text.
+File names.
+Basic code snippets.
+Email addresses.
+Common programming symbols.
+
+Make the supported layout and symbol positions explicit.
+
+Do not force advanced symbols on a beginner who has not mastered ordinary typing.
+
+Reward: Symbol Alchemist title.
+
+World 8: The Rhythm Observatory
+
+Purpose: Improve consistency and controlled speed.
+
+Teach the player to avoid uncontrolled bursts followed by long pauses.
+
+Use rhythm-oriented exercises, short repeated phrases, and varied words.
+
+Measure both speed and accuracy.
+
+Use a subtle visual pulse or optional audio rhythm as guidance, but never require the player to match a tempo that causes errors or physical discomfort.
+
+Reward: Rhythm Master title.
+
+World 9: The Blindfold Trials
+
+Purpose: Strengthen independent touch typing.
+
+Remove the on-screen keyboard diagram.
+
+Use short, achievable challenges first, then increase complexity.
+
+The player practices:
+
+Familiar words without visual key guidance.
+Unfamiliar sentences.
+Longer passages.
+Punctuation.
+Mixed key transitions.
+Previously difficult keys.
+
+Allow a hint when necessary, but record that assistance was used.
+
+Reward: Eyes-Free Explorer title.
+
+World 10: The Velocity Frontier
+
+Purpose: Increase speed while preserving precision.
+
+Introduce adjustable speed goals and increasingly challenging text.
+
+Do not force speed before sufficient accuracy has been established.
+
+Provide different training modes:
+
+Precision mode.
+Flow mode.
+Speed mode.
+Endurance mode.
+Accuracy recovery mode.
+
+Reward: Velocity Champion title.
+
+World 11: The Real-World Academy
+
+Purpose: Transfer typing skills into useful everyday activities.
+
+Use practice material modeled on:
+
+Everyday messages.
+Emails.
+Short articles.
+Notes.
+Study materials.
+Work documents.
+Basic code.
+Structured data.
+
+Let the player choose relevant categories.
+
+Measure performance on text that has not been memorized from previous lessons.
+
+Reward: Real-World Typist title.
+
+World 12: The Mastery Summit
+
+Purpose: Demonstrate robust, independent skill.
+
+Combine unfamiliar text, varied punctuation, sustained typing, and minimal visual assistance.
+
+Use multiple assessments rather than one lucky run.
+
+Require evidence of both accuracy and consistency.
+
+Provide a final report showing the player's initial baseline, current performance, weakest remaining skills, and recommended next steps.
+
+Do not declare mastery solely because the player has reached an arbitrary speed threshold.
+
+Reward: Master of the Keys.
+
+Allow the player to revisit previous worlds at any time.
+
+6. CREATE MULTIPLE ACTUAL GAME MODES
+
+The application must contain several genuinely different, playable modes.
+
+Mode A: Story Quest
+
+The main campaign.
+
+The player explores a world, completes typing missions, encounters characters, collects items, and unlocks new areas.
+
+Each mission has a clear learning objective.
+
+Story elements should be concise enough that the player spends most of their time practicing.
+
+Mode B: Key Hunter
+
+Target characters appear on screen.
+
+The player must press the correct key using the appropriate finger.
+
+Difficulty ranges from one or two keys to larger sets of keys.
+
+Include a keyboard-guidance toggle.
+
+Mode C: Word Sprint
+
+The player types words that appear one at a time.
+
+Words become more challenging as the player's demonstrated ability increases.
+
+Prioritize correct execution over raw speed.
+
+Mode D: Sentence Voyage
+
+The player types natural sentences while a character, vehicle, or explorer advances through a beautifully illustrated environment.
+
+Progress should reflect accurate typing, not merely the passage of time.
+
+Mode E: Falling Words
+
+Words descend toward a boundary.
+
+The player types them before they reach the bottom.
+
+Start slowly and introduce more words as ability improves.
+
+Missing a word should produce a recoverable consequence, not a humiliating failure screen.
+
+Provide a precision-focused alternative without a countdown.
+
+Mode F: Rhythm Type
+
+Words or short phrases appear in a rhythmic sequence.
+
+The player develops consistent timing while remaining free to prioritize accuracy.
+
+Include optional sound, adjustable rhythm, and a no-audio alternative.
+
+Mode G: Boss Battles
+
+Every boss represents a particular typing challenge.
+
+Examples:
+
+The Accuracy Golem tests precision.
+The Stuttering Specter tests consistency.
+The Number Dragon tests numeric entry.
+The Punctuation Phantom tests symbols.
+The Blindfold Titan tests independent touch typing.
+
+Each boss should have a clear weakness that corresponds to a trainable skill.
+
+The boss should become vulnerable when the player executes the required typing accurately.
+
+A mistake should create an opportunity to recover.
+
+Boss battles must test skills learned in earlier lessons rather than introduce unexplained mechanics.
+
+Mode H: Endless Expedition
+
+An endless mode that adjusts difficulty based on performance.
+
+Provide an optional relaxed mode with no timer.
+
+Offer meaningful milestones and personal records.
+
+Mode I: Daily Challenge
+
+Generate a short, focused session that reviews previously learned skills and introduces an appropriate challenge.
+
+Daily challenges should remain useful even if the player misses several days.
+
+Never reset learning progress or shame the player for taking a break.
+
+Mode J: Weak-Key Laboratory
+
+Automatically identify the player's weakest keys, finger movements, and transitions.
+
+Generate targeted drills using these weaknesses alongside familiar material.
+
+Allow the player to understand why the drills were selected.
+
+Mode K: Free Practice
+
+Allow users to select:
+
+Text category.
+Duration.
+Difficulty.
+Target accuracy.
+Keyboard visibility.
+Punctuation inclusion.
+Number inclusion.
+Practice style.
+
+Provide a distraction-free typing environment.
+
+Mode L: Personal Challenge Creator
+
+Allow users to create custom exercises from their own text.
+
+Provide a clear text input area and controls for exercise length and assistance.
+
+Do not transmit user-entered text to external services unless explicitly necessary and disclosed.
+
+7. DESIGN A COMPELLING GAME LOOP
+
+Every mission should follow a consistent, satisfying structure.
+
+Introduce the mission in one or two sentences.
+Identify the skill being practiced.
+Give a quick demonstration if necessary.
+Start the interactive exercise immediately.
+Display subtle, useful feedback during play.
+Finish with a satisfying completion animation.
+Present a concise performance report.
+Award experience, mastery progress, and relevant achievements.
+Recommend the next appropriate action.
+Let the player continue, retry, or take a break.
+
+Keep transitions quick.
+
+Do not require the player to navigate multiple menus between short practice activities.
+
+Provide a prominent Continue button and a keyboard-friendly way to begin the next exercise.
+
+Every screen should make the next action obvious.
+
+8. BUILD A PREMIUM, BEAUTIFUL VISUAL IDENTITY
+
+The interface must look like a professionally art-directed game.
+
+Avoid generic template styling, plain unformatted forms, cluttered dashboards, and an excessive collection of unrelated gradients.
+
+Use a cohesive visual language.
+
+Visual direction
+
+Use a sophisticated dark fantasy-meets-futuristic adventure aesthetic.
+
+Suggested palette:
+
+Deep midnight navy for the main background.
+Charcoal and blue-black for panels.
+Electric cyan for active learning elements.
+Violet for progression and magical effects.
+Warm gold for achievements.
+Coral or amber for carefully controlled error feedback.
+Soft white for primary text.
+Muted blue-gray for secondary information.
+
+Keep the palette configurable.
+
+Use restrained glow effects, elegant borders, layered surfaces, and consistent spacing.
+
+Do not use neon effects everywhere. Reserve strong visual emphasis for important actions and achievements.
+
+Typography
+
+Use a highly readable interface typeface.
+
+Use a clear monospace font for the typing target and typed characters.
+
+Differentiate:
+
+The target text.
+Correctly typed characters.
+The current character.
+Incorrect characters.
+Remaining text.
+
+The current target character must be immediately recognizable without creating unnecessary visual distraction.
+
+Main dashboard
+
+Create an attractive dashboard containing:
+
+Player profile and chosen avatar.
+Current rank and experience.
+Current campaign and mission.
+A large Continue Adventure button.
+Today's suggested practice.
+Current skill progression.
+Accuracy trend.
+Speed trend.
+Recent achievements.
+A clear route to free practice.
+A small, tasteful daily goal indicator.
+
+Do not overcrowd the dashboard with statistics.
+
+New users should immediately understand how to start.
+
+Returning users should immediately understand where to continue.
+
+Game environments
+
+Create a distinct visual identity for each world.
+
+Examples include:
+
+A peaceful illuminated sanctuary for home-row practice.
+A floating sky kingdom for upper-row practice.
+An underground crystal cavern for bottom-row practice.
+A magical forge for word practice.
+A grand citadel for sentences.
+A cosmic observatory for rhythm training.
+A mysterious foggy realm for blind typing.
+A radiant mountain summit for the final mastery challenge.
+
+The background must never compete with the typing text.
+
+Use lightweight animations and parallax effects where appropriate.
+
+Responsive design
+
+Design for desktop and laptop keyboards first.
+
+Support smaller screens gracefully.
+
+On phones and tablets, account for the fact that the user may be practicing with an external physical keyboard or the device's virtual keyboard.
+
+Do not assume virtual keyboard input provides the same experience as physical touch typing.
+
+Keep the interface functional at different viewport sizes.
+
+9. MAKE TYPING FEEL PHYSICALLY SATISFYING
+
+Every keystroke should feel responsive.
+
+Use a polished interaction system:
+
+Immediate character feedback.
+Subtle keypress animations.
+Smooth progress indicators.
+Satisfying completion effects.
+Tasteful particle bursts for milestones.
+Small experience-point animations.
+Responsive combo indicators.
+Clear but unobtrusive error feedback.
+A distinct victory moment at the end of a mission.
+
+Provide optional sound effects for:
+
+Correct keystrokes.
+Milestone completion.
+Level progression.
+Achievement unlocks.
+Mission completion.
+Error feedback.
+
+Use restrained sounds that do not become irritating during long sessions.
+
+Provide individual volume controls and a mute option.
+
+Avoid making a sound play on every keystroke if it becomes fatiguing.
+
+All animations must respect reduced-motion preferences.
+
+The typing interface should remain responsive even during visual effects.
+
+10. DESIGN REWARDS THAT SUPPORT MASTERY
+
+Implement a layered progression system.
+
+Experience points
+
+Award experience for meaningful participation and demonstrated improvement.
+
+Reward:
+
+Completing lessons.
+Practicing a weak skill.
+Improving accuracy.
+Completing a blind-typing challenge.
+Demonstrating retention.
+Completing a new difficulty level.
+Achieving a personal best.
+
+Do not make experience points depend exclusively on typing speed.
+
+Do not award unlimited progress for mindlessly repeating the easiest exercise.
+
+Levels and titles
+
+Create a progression path such as:
+
+Key Seeker.
+Home-Row Apprentice.
+Finger Navigator.
+Wordsmith.
+Precision Adept.
+Rhythm Keeper.
+Blind Typist.
+Velocity Explorer.
+Master of the Keys.
+
+Titles should reflect meaningful achievements.
+
+Collectibles
+
+Allow players to unlock:
+
+Avatars.
+Keyboard skins.
+Background themes.
+Character companions.
+Profile decorations.
+Victory animations.
+World-specific collectibles.
+
+Rewards should be earned through progress and mastery, not purchased through pressure tactics.
+
+Cosmetic rewards must not interfere with the typing experience.
+
+Achievements
+
+Create achievement categories for:
+
+Accuracy.
+Consistency.
+Finger independence.
+Blind typing.
+Speed improvement.
+Long-form typing.
+Punctuation.
+Numbers and symbols.
+Retention.
+Returning to practice.
+Personal improvement.
+
+Examples:
+
+"First Perfect Phrase": Complete a short exercise with no errors.
+
+"Eyes Up": Complete an exercise without the on-screen keyboard.
+
+"Steady Hands": Maintain consistent performance over several exercises.
+
+"Comeback": Improve a previously weak skill.
+
+"Patient Mastery": Demonstrate retained skill after a delay.
+
+Make achievement requirements transparent.
+
+Streaks
+
+Use a forgiving streak system.
+
+Allow users to define a reasonable daily or weekly practice goal.
+
+Never erase a player's lifetime progress when they miss a day.
+
+Offer optional reminders, not intrusive notifications.
+
+Celebrate returning after a break.
+
+Progress map
+
+Create a visually appealing world map with:
+
+Locked worlds.
+Available worlds.
+Current objectives.
+Completed challenges.
+Mastery milestones.
+Optional side quests.
+
+The map should communicate progress clearly.
+
+11. IMPLEMENT A REAL PERSONALIZED TYPING COACH
+
+The coaching engine is one of the most important components of the application.
+
+Create a per-skill profile containing, at minimum:
+
+Skill identifier.
+Keys involved.
+Assigned finger or fingers.
+Number of attempts.
+Correct attempts.
+Recent accuracy.
+Historical accuracy.
+Recent error count.
+Common incorrect substitutions.
+Time since last practice.
+Assistance level.
+Estimated mastery.
+Confidence in the mastery estimate.
+Last practiced timestamp.
+Recommended next review.
+
+Track letter keys individually when practical.
+
+Also track common transitions, such as moving between two neighboring keys or switching between hands.
+
+Mastery scoring
+
+Implement a transparent mastery estimate between 0 and 100.
+
+Do not calculate mastery from a single performance measure.
+
+Combine relevant signals such as:
+
+Accuracy over multiple attempts.
+Performance across different exercises.
+Independent performance without hints.
+Consistency.
+Retention after a delay.
+Transfer to unfamiliar words and sentences.
+
+Use sufficient sample sizes.
+
+Keep confidence separate from the mastery score so that a score based on limited evidence is not mistaken for certainty.
+
+Avoid pretending that the score is a validated psychological measurement.
+
+It is a practical instructional estimate.
+
+Weakness diagnosis
+
+After each exercise, identify the most useful next practice target.
+
+Examples:
+
+"You are accurate on most home-row keys, but your left ring finger needs more practice."
+
+"You are typing quickly, but errors increase when punctuation is introduced."
+
+"Your accuracy improves when the keyboard is visible. Let's gradually reduce that assistance."
+
+"Your performance on previously learned keys has remained stable. Let's introduce a new challenge."
+
+Generate messages from actual performance data. Never fabricate an improvement or claim a skill has been mastered without supporting evidence.
+
+Personalized practice generation
+
+Create exercises using a weighted mixture of:
+
+New skills.
+Recently learned skills.
+Weak skills.
+Previously mastered skills due for review.
+Realistic words.
+Familiar sentences.
+Unseen transfer material.
+
+Make the weighting configurable.
+
+For a beginner, keep the vocabulary and character set appropriate to the keys already introduced.
+
+Do not generate a supposedly beginner-friendly word that requires several unlearned keys.
+
+For advanced learners, introduce varied text, punctuation, and unfamiliar combinations.
+
+Avoid overfitting
+
+A player who memorizes one passage should not appear to have mastered all typing.
+
+Maintain separate measurements for familiar drills and unseen transfer exercises.
+
+Periodically evaluate skills with previously unseen text.
+
+Use multiple exercises and repeated observations before making strong claims about improvement.
+
+12. BUILD A PRECISE TYPING ENGINE
+
+The typing engine must be correct, responsive, and thoroughly tested.
+
+Do not implement typing as a simple animation that advances whenever a key is pressed.
+
+Implement real character-by-character comparison.
+
+Input handling
+
+Support physical keyboard input and appropriate browser input methods.
+
+Handle:
+
+Letters.
+Numbers.
+Spaces.
+Punctuation.
+Shift-modified characters.
+Capitalization.
+Backspace.
+Enter where appropriate.
+Keyboard layouts.
+Input focus.
+Restarting and pausing.
+Accidental repeated input.
+Browser shortcut conflicts where safely manageable.
+
+Do not capture keystrokes when the player is typing into a settings field or another unrelated input.
+
+Keep keyboard handling scoped to the active game.
+
+Do not globally prevent all keyboard shortcuts.
+
+Use semantic controls and predictable keyboard navigation.
+
+Error handling
+
+Choose and document a consistent error model.
+
+Support configurable modes:
+
+Strict mode: the player must correct mistakes before continuing.
+Flow mode: the player can continue, but errors are recorded.
+Free mode: corrections are unrestricted and the goal is practice rather than scoring.
+
+For every mode, make the scoring rules clear.
+
+Track corrected and uncorrected mistakes separately.
+
+Do not silently erase evidence of errors when a player presses Backspace.
+
+At the same time, do not punish correction so severely that players avoid learning to correct mistakes.
+
+Text comparison
+
+Implement accurate comparison between expected and actual input.
+
+Handle Unicode carefully.
+
+Distinguish character-level accuracy from word-level accuracy.
+
+Be explicit about whether whitespace and punctuation count toward scoring.
+
+Avoid hidden rules that make scores inconsistent.
+
+Timing
+
+Use a reliable monotonic timing source for session duration where available.
+
+Exclude paused time from active typing time.
+
+Handle tab changes and window focus appropriately.
+
+Do not let a background tab produce unrealistic speed results.
+
+Scoring metrics
+
+Calculate and label these metrics consistently:
+
+Raw WPM = correctly entered or entered characters according to the documented metric, divided by five, divided by active minutes.
+
+Net WPM = net correct characters divided by five, divided by active minutes.
+
+Use a consistent convention for spaces, punctuation, and corrected mistakes.
+
+Because typing applications use different definitions, display the exact convention in the methodology or help screen.
+
+Accuracy = correct character attempts divided by total character attempts, multiplied by 100.
+
+Define how corrected errors affect the metric and keep that definition consistent.
+
+Do not display an impressive speed score when the sample is too short to support a meaningful estimate.
+
+Use minimum sample sizes and clearly identify short-sample results as provisional.
+
+Session summary
+
+At the end of each exercise, show:
+
+Net WPM.
+Raw WPM where useful.
+Character accuracy.
+Total errors.
+Corrected errors.
+Most difficult keys.
+Most difficult transitions.
+Comparison with recent comparable exercises.
+Whether accuracy improved, remained stable, or declined.
+A suggested next exercise.
+
+Use honest comparisons.
+
+Compare like with like whenever possible: similar text complexity, duration, and assistance level.
+
+13. MAKE BLIND TYPING A FIRST-CLASS FEATURE
+
+This feature is central to the entire product.
+
+Create a dedicated "Eyes-Free Training" system.
+
+The player should progressively learn to type without looking at an on-screen keyboard diagram.
+
+Phase 1: Learn the tactile anchors
+
+Teach the F and J home-row markers.
+
+Encourage the player to locate them through touch.
+
+Phase 2: Practice returning home
+
+Create exercises that ask the player to reach a key and then return to the home position.
+
+Explain the concept of a stable home-row reference.
+
+Phase 3: Hide the keyboard diagram
+
+Allow the player to type known sequences without visible finger guidance.
+
+Keep the target text readable.
+
+Phase 4: Introduce unseen words
+
+Use words the player has not repeatedly memorized.
+
+Measure performance without the keyboard diagram.
+
+Phase 5: Blind sentence challenges
+
+Introduce natural sentences and realistic punctuation.
+
+Phase 6: Independent typing assessment
+
+Ask the player to type a new paragraph without on-screen keyboard assistance.
+
+Evaluate accuracy, speed, consistency, and performance on unfamiliar material.
+
+Phase 7: Retention challenge
+
+After an appropriate delay, assess the same underlying skills using different text.
+
+Do not require the player to remember a specific passage.
+
+Assistance transparency
+
+Clearly record whether keyboard assistance was visible.
+
+Never claim to know whether the player looked down at a physical keyboard.
+
+If the player voluntarily reports looking down, use that information to suggest more suitable exercises without punishment.
+
+Make the player feel proud of gradually becoming independent.
+
+14. CREATE SHORT, FUN, HIGH-VARIETY PRACTICE
+
+Design sessions that fit naturally into everyday life.
+
+Offer suggested session lengths such as:
+
+2 minutes: Quick Quest.
+5 minutes: Daily Training.
+10 minutes: Skill Expedition.
+15 minutes: Deep Practice.
+20 minutes: Extended Challenge.
+
+Allow longer sessions, but do not encourage users to continue when their hands are tired or uncomfortable.
+
+Vary the exercise format while keeping the learning objective coherent.
+
+For example, a five-minute session could include:
+
+A brief warm-up.
+A targeted weak-key drill.
+A short game challenge.
+A previously learned skill review.
+A tiny end-of-session assessment.
+
+Do not fill every session with random minigames.
+
+The variety should support learning rather than interrupt it.
+
+Provide an option to practice only one skill for players who prefer focused repetition.
+
+15. IMPLEMENT ACCESSIBILITY AND PHYSICAL COMFORT
+
+Typing should feel sustainable.
+
+Include:
+
+Adjustable text size.
+High-contrast mode.
+Colorblind-friendly feedback.
+Reduced-motion mode.
+Adjustable sound.
+Full keyboard navigation.
+Screen-reader-friendly labels.
+Clear focus indicators.
+Configurable animation intensity.
+Optional dyslexia-friendly font settings where feasible.
+A no-timer mode.
+A low-pressure practice mode.
+
+Do not rely on color alone to communicate correctness.
+
+Avoid rapid flashing.
+
+Avoid visual effects that obscure the current typing target.
+
+Use accessible contrast ratios.
+
+Provide concise reminders to relax the hands and take breaks during longer sessions.
+
+Do not make unsupported medical claims about posture or ergonomics.
+
+If a player reports discomfort, suggest pausing or stopping rather than pushing through pain.
+
+Do not use punitive countdowns as the only way to play.
+
+16. TECHNICAL ARCHITECTURE
+
+Choose a technology stack appropriate to the environment in which you are running.
+
+If a stack has already been established, respect it unless there is a compelling technical reason to change.
+
+For a new browser-based implementation, prefer a maintainable modern stack such as:
+
+React.
+TypeScript.
+A reliable build tool such as Vite or the environment's established equivalent.
+A consistent styling system using CSS modules, well-structured CSS, or an existing component library.
+A lightweight animation library only where it adds genuine value.
+Local persistence using IndexedDB or an appropriate alternative.
+A robust unit-testing framework.
+Browser-based integration tests where supported.
+
+Avoid introducing unnecessary dependencies.
+
+Use a clear modular architecture.
+
+Separate the following concerns:
+
+Application shell.
+Navigation and world map.
+Player profile.
+Campaign progression.
+Lesson content.
+Typing input engine.
+Character comparison.
+Scoring.
+Adaptive difficulty.
+Mastery estimation.
+Review scheduling.
+Exercise generation.
+Game mechanics.
+Achievements.
+Audio and animation.
+Data persistence.
+Accessibility.
+Analytics and progress visualization.
+Settings.
+Testing.
+
+Keep instructional logic independent of presentation whenever practical.
+
+Use typed data structures.
+
+Avoid giant monolithic components.
+
+Create reusable components with clear responsibilities.
+
+Do not hardcode every exercise into the UI.
+
+Store lessons, exercises, rewards, and configuration in structured data so the curriculum can be expanded without rewriting the application.
+
+17. LOCAL-FIRST DATA AND PRIVACY
+
+The game should work without requiring a user account.
+
+Save locally:
+
+Player preferences.
+Keyboard layout.
+Lesson progress.
+Skill mastery estimates.
+Practice history.
+Achievements.
+Unlocked content.
+Settings.
+Review schedules.
+
+Use an appropriate persistence mechanism.
+
+Provide a way to export and import progress if feasible.
+
+Provide a reset option with a clear confirmation step.
+
+Do not send typed text, performance data, or personal information to external servers unless the feature genuinely requires it and the user has been clearly informed.
+
+Do not include unnecessary tracking, advertising SDKs, or hidden analytics.
+
+If cloud synchronization is added later, make it optional and explain what data is synchronized.
+
+Make it clear when progress is stored only on the current device.
+
+18. DATA MODEL
+
+Create structured models for the main entities.
+
+Player
+
+Include:
+
+Unique local identifier.
+Display name or nickname.
+Selected keyboard layout.
+Experience points.
+Current level.
+Unlocked worlds.
+Selected avatar.
+Preferences.
+Creation timestamp.
+Skill
+
+Include:
+
+Unique skill identifier.
+Skill category.
+Relevant keys.
+Assigned fingers.
+Prerequisite skills.
+Mastery estimate.
+Confidence estimate.
+Recent accuracy.
+Historical accuracy.
+Practice count.
+Last-practiced timestamp.
+Next-review recommendation.
+Exercise
+
+Include:
+
+Exercise identifier.
+Title.
+Learning objective.
+Difficulty.
+Required keys.
+Exercise type.
+Target text or generation rules.
+Suggested duration.
+Assistance settings.
+Completion criteria.
+Reward rules.
+Session
+
+Include:
+
+Session identifier.
+Exercise identifier.
+Start and end times.
+Active typing duration.
+Typed characters.
+Correct characters.
+Error count.
+Corrected error count.
+Accuracy.
+WPM metrics.
+Assistance level.
+Relevant skill identifiers.
+Completion status.
+
+Do not persist every keystroke indefinitely unless there is a clear need. Prefer aggregate statistics for routine progress tracking.
+
+Achievement
+
+Include:
+
+Achievement identifier.
+Name.
+Description.
+Unlock conditions.
+Progress.
+Unlock timestamp.
+Associated reward.
+Review schedule
+
+Include:
+
+Skill identifier.
+Last successful review.
+Recent performance.
+Suggested next review.
+Review priority.
+Confidence.
+
+Ensure data migrations or safe defaults prevent older saved progress from breaking when the application evolves.
+
+19. CONTENT QUALITY AND EXERCISE GENERATION
+
+Create a substantial initial library of exercises.
+
+Do not populate the game with only a handful of repetitive examples.
+
+Include varied, carefully designed content for each curriculum stage.
+
+Beginner content
+
+Use short sequences, familiar words, and simple combinations that only require already-introduced keys.
+
+Intermediate content
+
+Use varied words, transitions between fingers, short sentences, and previously learned punctuation.
+
+Advanced content
+
+Use realistic paragraphs, unfamiliar text, more complex punctuation, numbers, and varied sentence structures.
+
+Content rules
+Do not repeat the same sentence excessively.
+Avoid nonsensical content unless it serves a specific motor-learning purpose.
+Keep exercise length appropriate to the player's level.
+Ensure generated words do not accidentally require unavailable keys in restricted beginner exercises.
+Make target text easy to read.
+Avoid offensive or disturbing text.
+Provide multiple content categories.
+Allow the player to skip a topic they do not want to practice.
+Clearly identify exercises that focus on a specific key or movement.
+Distinguish memorized practice from unseen transfer practice.
+
+Where possible, build a reusable content generator instead of manually writing every possible exercise.
+
+For each exercise, record its intended learning objective and the skills it trains.
+
+20. ANALYTICS AND PROGRESS VISUALIZATION
+
+Build an attractive progress center.
+
+Include:
+
+Speed chart
+
+Show the trend in net WPM over time.
+
+Provide filters for session type and practice mode.
+
+Accuracy chart
+
+Show character accuracy over time.
+
+Skill heatmap
+
+Represent key-level performance visually.
+
+Use labels and patterns in addition to color.
+
+Finger performance
+
+Show which fingers are associated with more errors.
+
+Avoid presenting this as a judgment about the player's physical ability.
+
+Transition analysis
+
+Identify recurring difficult letter combinations.
+
+Blind-typing progress
+
+Track performance with and without keyboard assistance.
+
+Retention
+
+Show whether previously learned skills remain reliable after a delay.
+
+Session history
+
+List recent sessions with their duration, accuracy, speed, and exercise type.
+
+Personal bests
+
+Track separate records for:
+
+Highest speed at an acceptable accuracy.
+Highest accuracy on a meaningful sample.
+Best blind-typing performance.
+Longest comfortable session.
+Best performance on unfamiliar text.
+Strongest improvement in a previously weak skill.
+
+Never compare incompatible measurements without explaining the difference.
+
+Do not use misleading charts that imply improvement where the data does not support it.
+
+21. SETTINGS AND PERSONALIZATION
+
+Create a dedicated settings screen.
+
+Include:
+
+Keyboard layout.
+Sound effects.
+Music or ambience.
+Animation intensity.
+Color theme.
+Text size.
+Keyboard diagram visibility.
+Assistance level.
+Practice duration.
+Timer preference.
+Error correction mode.
+Target accuracy.
+Target speed.
+Daily practice goal.
+Exercise categories.
+Accessibility settings.
+Data export.
+Progress reset.
+
+Remember preferences between sessions.
+
+Offer sensible defaults.
+
+Do not make the player configure dozens of settings before their first exercise.
+
+A new player should be able to start practicing immediately.
+
+22. FIRST-TIME USER EXPERIENCE
+
+Create a polished onboarding experience that takes as little time as reasonably possible.
+
+Step 1: Welcome.
+
+Explain that the game will help the player build accurate typing habits and eventually type without looking at the keyboard.
+
+Step 2: Choose the keyboard layout.
+
+Offer supported layouts and explain that finger assignments depend on the chosen layout.
+
+Step 3: Select starting experience.
+
+Offer beginner, intermediate, and advanced starting paths.
+
+Treat these selections as initial estimates, not permanent labels.
+
+Step 4: Optional diagnostic.
+
+Offer a short assessment or a skip option.
+
+Step 5: Establish the tactile anchors.
+
+Introduce the home row and F/J markers where appropriate to the selected layout.
+
+Step 6: Start the first playable mission.
+
+Do not make the player sit through a long tutorial before typing.
+
+Provide contextual instructions as the player encounters new mechanics.
+
+The initial experience should make the player feel capable and curious.
+
+23. ERROR STATES AND EDGE CASES
+
+Handle real-world conditions gracefully.
+
+Test and support:
+
+The player types before the exercise begins.
+The player accidentally types into another input.
+The player presses Backspace repeatedly.
+The player switches browser tabs.
+The browser window loses focus.
+The player pauses and resumes.
+The player restarts a lesson.
+The player finishes an exercise extremely quickly.
+The player enters no characters.
+The player makes many mistakes.
+The player changes the keyboard layout.
+Saved progress is missing or malformed.
+The player refreshes the page.
+Local storage or IndexedDB is unavailable.
+A sound asset fails to load.
+A visual effect fails.
+The screen is resized during a session.
+The user uses keyboard navigation rather than a mouse.
+The user disables animations.
+The player attempts to access a locked mission.
+The player returns after a long break.
+
+Never let an optional animation or sound effect break the core typing engine.
+
+The application must fail gracefully and preserve saved progress whenever possible.
+
+24. TESTING REQUIREMENTS
+
+Write meaningful automated tests.
+
+Do not consider the project complete merely because it renders in a browser.
+
+Typing engine tests
+
+Test:
+
+Correct characters.
+Incorrect characters.
+Spaces.
+Capitalization.
+Punctuation.
+Backspace.
+Corrected errors.
+Strict mode.
+Flow mode.
+Free mode.
+Timer behavior.
+Pause and resume.
+Character comparison.
+WPM calculations.
+Accuracy calculations.
+Very short sessions.
+Unicode handling where supported.
+Curriculum tests
+
+Verify that:
+
+A lesson only introduces permitted keys.
+Prerequisites are respected.
+Completing a lesson unlocks the correct content.
+Difficulty does not jump unexpectedly.
+Previously learned skills are reviewed.
+Assistance levels change correctly.
+Weak-key drills target the intended weaknesses.
+Progression tests
+
+Verify that:
+
+XP is awarded correctly.
+Achievements unlock at the correct conditions.
+Rewards cannot be claimed repeatedly through a bug.
+Progress survives refreshes.
+Settings persist.
+Reset behavior is safe.
+Invalid saved data does not crash the application.
+UI tests
+
+Verify that:
+
+The first mission can be started.
+Typing input works as intended.
+Buttons have real functionality.
+Navigation works.
+The keyboard diagram can be hidden.
+Game modes are playable.
+Session summaries are accurate.
+The interface works at different viewport sizes.
+Keyboard navigation is functional.
+Performance tests
+
+Ensure that:
+
+Keystroke feedback feels immediate.
+Long typing sessions do not cause serious lag.
+Large histories do not make the dashboard unusable.
+Animations do not block input.
+The game remains usable on ordinary laptops.
+
+Fix all critical issues discovered during testing.
+
+25. ACCEPTANCE CRITERIA
+
+The application is not finished until all essential criteria are satisfied.
+
+Functional
+A user can start without creating an account.
+A user can begin typing within a short onboarding flow.
+The typing engine compares actual input against target text.
+Accuracy and speed metrics are calculated consistently.
+Multiple game modes are genuinely playable.
+The curriculum unlocks progressively.
+The game provides useful feedback.
+The keyboard diagram can be hidden.
+Progress is saved locally.
+The user can revisit earlier lessons.
+The game recommends appropriate next exercises.
+Session summaries reflect actual performance.
+Settings persist between sessions.
+Critical controls are functional.
+Educational
+The game teaches finger assignments.
+The game introduces keys progressively.
+The game fades assistance as skills improve.
+Previously learned skills return through review.
+Difficulty adapts to repeated performance rather than a single score.
+Weak keys and transitions receive targeted practice.
+Accuracy is valued alongside speed.
+Blind typing is explicitly trained.
+Unfamiliar text is used to assess transfer.
+Mastery claims require multiple supporting observations.
+Visual
+The interface looks polished and cohesive.
+The dashboard is easy to understand.
+Game screens are visually engaging.
+The typing target remains readable.
+Animations are responsive and restrained.
+Error feedback is clear but not discouraging.
+The application works at different screen sizes.
+Accessibility settings are respected.
+Reliability
+No critical errors remain in the main gameplay flow.
+Saved progress survives normal refreshes.
+Pausing does not produce invalid timing metrics.
+Input does not leak into unrelated fields.
+Core functionality works when sound or animation is disabled.
+Automated tests cover critical logic.
+26. DEVELOPMENT EXECUTION PLAN
+
+Work in a disciplined order.
+
+Phase 1: Inspect the environment
+
+Determine which files, dependencies, frameworks, and tools already exist.
+
+Do not overwrite working project configuration unnecessarily.
+
+If a project already exists, understand it before changing it.
+
+Phase 2: Establish the core architecture
+
+Build the application shell, routing or screen management, data models, persistence layer, and design system.
+
+Phase 3: Implement the typing engine
+
+Before building elaborate game effects, make sure character comparison, timing, scoring, focus management, and error correction work correctly.
+
+Phase 4: Build the first complete learning path
+
+Implement onboarding, home-row instruction, early lessons, a playable challenge, and a session summary.
+
+Make the complete beginning-to-end experience functional.
+
+Phase 5: Add adaptive instruction
+
+Implement skill tracking, weakness diagnosis, assistance fading, review scheduling, and difficulty adaptation.
+
+Phase 6: Build the game modes
+
+Add the distinct game modes and ensure that each is genuinely playable.
+
+Phase 7: Add progression and rewards
+
+Implement XP, levels, achievements, world unlocking, and meaningful mastery milestones.
+
+Phase 8: Add the visual polish
+
+Implement backgrounds, animations, sound effects, transitions, responsive layouts, and the premium design system.
+
+Phase 9: Build analytics and personalization
+
+Add performance history, charts, keyboard settings, export options, and personalized recommendations.
+
+Phase 10: Test, debug, and refine
+
+Run available tests, exercise the full gameplay loop, inspect edge cases, and fix the highest-priority issues.
+
+If browser preview tools are available, inspect the application visually and interact with it.
+
+Do not claim to have run tests or inspected the browser unless you actually did so.
+
+Phase 11: Deliver
+
+Provide:
+
+The completed application.
+A clear file structure.
+Instructions for running it.
+Any required installation commands.
+A summary of implemented features.
+A list of remaining limitations, if any.
+Test results that were actually observed.
+
+If you cannot complete every feature within the available environment, prioritize a polished, fully working core experience over a vast collection of superficial features.
+
+Never replace working functionality with fake buttons, placeholder statistics, or screenshots of an imaginary game.
+
+27. PRIORITY ORDER WHEN TIME OR RESOURCES ARE LIMITED
+
+Implement features in this order:
+
+Priority 1: A reliable typing engine.
+
+Priority 2: A coherent curriculum that teaches the correct finger movements.
+
+Priority 3: A beautiful, distraction-free typing interface.
+
+Priority 4: Accuracy, speed, and error analytics.
+
+Priority 5: Adaptive lessons and weak-key practice.
+
+Priority 6: Keyboard-assistance fading and blind-typing challenges.
+
+Priority 7: Local persistence and progress tracking.
+
+Priority 8: A complete initial game world with missions and rewards.
+
+Priority 9: Additional game modes.
+
+Priority 10: Advanced visual effects, collectible systems, and optional enhancements.
+
+A small game that teaches effectively and feels delightful is better than a huge game full of broken or superficial features.
+
+28. FINAL INSTRUCTION
+
+Now begin building KEYQUEST.
+
+Do not stop after producing a concept document, a design plan, a wireframe, or a static landing page.
+
+Inspect the available environment, choose a sensible implementation approach, and build the most complete, functional version possible.
+
+Make the first playable experience excellent.
+
+The first few minutes should demonstrate the central promise: the player can begin with their current ability, receive helpful guidance, practice meaningful finger movements, experience immediate feedback, and see a clear path toward independent touch typing.
+
+Every major mechanic must serve the player's journey toward genuine skill.
+
+Make the game visually beautiful, mechanically satisfying, emotionally encouraging, technically robust, educationally thoughtful, and fun enough to return to voluntarily.
+
+The ultimate victory condition is not simply a high WPM score.
+
+It is a player who can sit at a keyboard, look at the screen, think about what they want to write, and allow their fingers to find the keys naturally—accurately, comfortably, and without consciously searching for each letter.
+
+Build that experience.
