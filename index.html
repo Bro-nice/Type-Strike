@@ -2,32 +2,34 @@
 <html lang="en" class="h-full w-full overflow-hidden select-none bg-slate-950">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌨️</text></svg>" />
     <title>TypeStrike — Cyber Keyboard Arcade</title>
-    <meta name="description" content="Fast-paced cyber keyboard typing arcade defense. Type words to fire plasma lasers, trigger EMP chain blasts, unleash combo overdrive, and master touch typing." />
+    <meta name="description" content="Precision Cyber Keyboard Defense Arcade. Master touch typing, intercept escalating threats, discharge EMP waves, and climb the global ranks." />
     <meta property="og:title" content="TypeStrike — Cyber Keyboard Arcade" />
-    <meta property="og:description" content="Fast-paced cyber keyboard typing arcade defense. Type words to fire plasma lasers, trigger EMP chain blasts, unleash combo overdrive, and master touch typing." />
+    <meta property="og:description" content="Precision Cyber Keyboard Defense Arcade. Master touch typing, intercept escalating threats, discharge EMP waves, and climb the global ranks." />
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;0,800;1,700&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
     <style>
       :root {
-        --cyan: #00f0ff;
-        --cyan-glow: rgba(0, 240, 255, 0.4);
-        --gold: #ffd000;
-        --gold-glow: rgba(255, 208, 0, 0.45);
-        --pink: #ff007f;
-        --pink-glow: rgba(255, 0, 127, 0.4);
-        --green: #00ff88;
-        --green-glow: rgba(0, 255, 136, 0.4);
+        --cyan: #22d3ee;
+        --cyan-soft: rgba(34, 211, 238, 0.14);
+        --cyan-border: rgba(34, 211, 238, 0.35);
+        --gold: #f59e0b;
+        --gold-bright: #fbbf24;
+        --pink: #f43f5e;
+        --green: #10b981;
         --purple: #8b5cf6;
-        --bg-dark: #050814;
-        --panel-bg: rgba(10, 15, 30, 0.85);
-        --panel-border: rgba(0, 240, 255, 0.25);
+        --bg-space: #040814;
+        --surface-1: rgba(9, 15, 30, 0.94);
+        --surface-2: rgba(15, 23, 42, 0.92);
+        --border-subtle: rgba(148, 163, 184, 0.16);
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --text-muted: #64748b;
       }
 
       * {
@@ -36,43 +38,34 @@
         padding: 0;
         user-select: none;
         -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      body {
-        width: 100vw;
-        height: 100vh;
+      html, body {
+        width: 100%;
+        height: 100%;
         overflow: hidden;
-        background-color: var(--bg-dark);
-        color: #e2e8f0;
-        font-family: 'Chakra Petch', sans-serif;
+        background-color: var(--bg-space);
+        color: var(--text-primary);
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        touch-action: none;
       }
 
-      /* CRT Scanline & Vignette Effect */
-      .scanlines {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 50;
-        background: linear-gradient(
-          to bottom,
-          rgba(255, 255, 255, 0),
-          rgba(255, 255, 255, 0) 50%,
-          rgba(0, 0, 0, 0.22) 50%,
-          rgba(0, 0, 0, 0.22)
-        );
-        background-size: 100% 4px;
-        opacity: 0.65;
+      .tabular {
+        font-family: 'JetBrains Mono', monospace;
+        font-variant-numeric: tabular-nums;
       }
 
+      /* Subtle atmospheric frame without GPU lag */
       .vignette {
         position: fixed;
         inset: 0;
         pointer-events: none;
-        z-index: 49;
-        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+        z-index: 44;
+        box-shadow: inset 0 0 90px rgba(2, 4, 10, 0.85);
       }
 
-      /* Game Canvas */
       #gameCanvas {
         position: absolute;
         inset: 0;
@@ -82,171 +75,379 @@
         display: block;
       }
 
-      /* Cyber UI Containers */
-      .ui-layer {
+      /* ====================================================
+         TOP-DOCKED PRECISION COCKPIT HUD (COMPACT RATIO)
+         ==================================================== */
+      .hud-root {
         position: absolute;
-        inset: 0;
-        z-index: 10;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 15;
         pointer-events: none;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        padding: 16px 24px;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 8px;
+      }
+
+      @media (min-width: 640px) {
+        .hud-root {
+          padding: 6px 14px;
+          gap: 5px;
+        }
       }
 
       .pointer-auto {
         pointer-events: auto;
       }
 
-      .cyber-panel {
-        background: var(--panel-bg);
-        border: 1px solid var(--panel-border);
-        border-radius: 12px;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(0, 240, 255, 0.05);
-        transition: all 0.2s ease;
+      .hud-top-row {
+        width: 100%;
+        max-width: 820px;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: stretch;
+        gap: 5px;
       }
 
-      .cyber-panel:hover {
-        border-color: rgba(0, 240, 255, 0.5);
+      @media (min-width: 640px) {
+        .hud-top-row {
+          gap: 8px;
+        }
       }
 
-      /* Neon Text Glow */
-      .glow-cyan {
-        color: var(--cyan);
-        text-shadow: 0 0 10px var(--cyan-glow);
-      }
-      .glow-gold {
-        color: var(--gold);
-        text-shadow: 0 0 10px var(--gold-glow);
-      }
-      .glow-pink {
-        color: var(--pink);
-        text-shadow: 0 0 10px var(--pink-glow);
-      }
-      .glow-green {
-        color: var(--green);
-        text-shadow: 0 0 10px var(--green-glow);
-      }
-
-      /* Buttons */
-      .cyber-btn {
-        background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.15));
-        border: 1px solid var(--cyan);
-        color: #ffffff;
-        font-family: 'Chakra Petch', sans-serif;
-        font-weight: 700;
-        letter-spacing: 1px;
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-        text-transform: uppercase;
+      /* Architectural Aerospace Panel (Zero blur overhead) */
+      .hud-card {
+        background: var(--surface-1);
+        border: 1px solid var(--border-subtle);
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        padding: 7px 10px;
         position: relative;
+      }
+
+      /* Compact proportions specifically for top HUD cards */
+      #hudLayer .hud-top-row .hud-card {
+        border-radius: 8px;
+        padding: 4px 8px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+
+      @media (min-width: 640px) {
+        #hudLayer .hud-top-row .hud-card {
+          padding: 5px 11px;
+        }
+      }
+
+      .hud-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+      }
+
+      #hudLayer .hud-label {
+        font-size: 7.5px;
+        letter-spacing: 0.06em;
+        line-height: 1;
+      }
+
+      .meter-track {
+        background: rgba(2, 6, 23, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        border-radius: 999px;
         overflow: hidden;
       }
 
-      .cyber-btn:hover {
-        background: linear-gradient(135deg, var(--cyan), #8b5cf6);
-        color: #050814;
-        box-shadow: 0 0 20px var(--cyan-glow);
-        transform: translateY(-2px);
-      }
-
-      .cyber-btn:active {
-        transform: translateY(1px);
+      .meter-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.16s ease, background 0.2s ease;
       }
 
       .icon-btn {
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #94a3b8;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        display: flex;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        color: var(--text-secondary);
+        width: 22px;
+        height: 20px;
+        border-radius: 5px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: border-color 0.14s ease, color 0.14s ease, background 0.14s ease, transform 0.1s ease;
+        touch-action: manipulation;
       }
 
       .icon-btn:hover {
-        background: rgba(0, 240, 255, 0.2);
+        background: rgba(34, 211, 238, 0.14);
         color: var(--cyan);
-        border-color: var(--cyan);
-        box-shadow: 0 0 12px var(--cyan-glow);
+        border-color: var(--cyan-border);
       }
 
-      /* Virtual Touch-Typing Keyboard */
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+
+      .icon-btn svg {
+        width: 11px;
+        height: 11px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.1;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* Sub-Ribbon: Target Lock + Finger Coach + EMP Reactor */
+      .hud-sub-bar {
+        width: 100%;
+        max-width: 460px;
+        background: rgba(9, 15, 30, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 7px;
+        padding: 3px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Restricted EMP Reactor Button with Integrated Progress */
+      .emp-reactor-btn {
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 2.5px 8px;
+        border-radius: 5px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        font-weight: 800;
+        cursor: pointer;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(15, 23, 42, 0.95);
+        color: var(--text-secondary);
+        touch-action: manipulation;
+        white-space: nowrap;
+        transition: border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+      }
+
+      .emp-reactor-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0%;
+        background: rgba(245, 158, 11, 0.18);
+        transition: width 0.18s ease;
+        pointer-events: none;
+      }
+
+      .emp-reactor-label {
+        position: relative;
+        z-index: 1;
+      }
+
+      .emp-reactor-btn.ready {
+        background: linear-gradient(135deg, #f59e0b, #f43f5e);
+        color: #030712;
+        border-color: #fbbf24;
+        box-shadow: 0 0 18px rgba(245, 158, 11, 0.45);
+        animation: pulseEmpReady 0.6s infinite alternate ease-in-out;
+      }
+
+      .emp-reactor-btn.ready .emp-reactor-progress {
+        display: none;
+      }
+
+      @keyframes pulseEmpReady {
+        from { transform: scale(1); }
+        to { transform: scale(1.04); }
+      }
+
+      /* Laptop / Desktop Side-Rail HUD (Leaves center top-to-bottom combat corridor 100% open) */
+      @media (min-width: 901px) {
+        .hud-root {
+          inset: 0;
+          padding: 0;
+          gap: 0;
+        }
+
+        .hud-top-row {
+          position: static;
+          max-width: none;
+          width: 100%;
+          height: 100%;
+          display: block;
+          pointer-events: none;
+        }
+
+        /* Left Top: Operative & Shield Integrity */
+        #hudLayer .hud-top-row > div:nth-of-type(1) {
+          position: absolute;
+          top: 14px;
+          left: 14px;
+          width: 178px;
+          padding: 8px 11px;
+        }
+
+        #hudLayer #hudOpName {
+          max-width: 112px !important;
+        }
+
+        /* Left Side Below: Speed & Accuracy */
+        #hudLayer .hud-top-row > div:nth-of-type(2) {
+          position: absolute;
+          top: 82px;
+          left: 14px;
+          width: 178px;
+          padding: 8px 11px;
+          justify-content: space-around !important;
+        }
+
+        /* Right Top: Score & Precision Controls */
+        #hudLayer .hud-top-row > div:nth-of-type(3) {
+          position: absolute;
+          top: 14px;
+          right: 14px;
+          width: 178px;
+          padding: 8px 11px;
+          gap: 5px;
+        }
+
+        /* Right Side Below: Target Lock + Finger Coach + EMP Reactor */
+        #hudLayer .hud-sub-bar {
+          position: absolute;
+          top: 82px;
+          right: 14px;
+          width: 178px;
+          max-width: 178px;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 6px;
+          padding: 8px 11px;
+          border-radius: 8px;
+        }
+
+        #hudLayer .hud-sub-bar > div:first-child {
+          justify-content: space-between;
+        }
+
+        #hudLayer #hudFingerCoach {
+          max-width: none !important;
+          text-align: center;
+          padding: 2px 0;
+        }
+
+        #hudLayer .emp-reactor-btn {
+          width: 100%;
+          padding: 5px 8px;
+          font-size: 9.5px;
+        }
+      }
+
+      /* ====================================================
+         PRECISION MECHANICAL DECK (Compact Touch Keyboard)
+         ==================================================== */
       .keyboard-container {
         position: absolute;
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20;
-        background: rgba(6, 10, 22, 0.78);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 12px;
-        padding: 6px 10px;
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.65);
-        backdrop-filter: blur(8px);
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 30;
+        background: linear-gradient(180deg, rgba(8, 13, 27, 0.96) 0%, rgba(4, 7, 17, 0.99) 100%);
+        border-top: 1px solid rgba(34, 211, 238, 0.28);
+        padding: 6px 5px max(6px, env(safe-area-inset-bottom, 6px));
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.75);
         display: flex;
         flex-direction: column;
-        gap: 3.5px;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        max-width: 95vw;
+        align-items: center;
+        touch-action: none !important;
+        transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       }
 
       .keyboard-container.hidden {
+        transform: translateY(105%);
         opacity: 0;
         pointer-events: none;
-        transform: translateX(-50%) translateY(30px);
+      }
+
+      .kb-board-wrap {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: 3.5px;
       }
 
       .kb-row {
         display: flex;
         justify-content: center;
-        gap: 4px;
+        gap: 3.5px;
+        width: 100%;
       }
 
       .kb-key {
-        width: 32px;
-        height: 28px;
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 5px;
+        flex: 1;
+        min-width: 0;
+        height: 35px;
+        background: linear-gradient(180deg, #17233d 0%, #0d1527 100%);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-bottom: 2.5px solid rgba(15, 23, 42, 0.95);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 3px rgba(0, 0, 0, 0.5);
+        border-radius: 6px;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
+        font-size: 13px;
         font-weight: 700;
-        color: #cbd5e1;
-        transition: all 0.08s ease;
+        color: #e2e8f0;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: none !important;
         position: relative;
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+        transition: transform 0.05s ease, background 0.06s ease;
       }
 
-      .kb-key.wide-15 { width: 44px; }
-      .kb-key.wide-175 { width: 54px; }
-      .kb-key.wide-2 { width: 62px; }
-      .kb-key.spacebar { width: 170px; font-size: 10px; }
+      @media (min-width: 640px) {
+        .kb-key {
+          height: 37px;
+          font-size: 14px;
+        }
+      }
 
-      /* Finger Color Accents on keys */
-      .kb-key.finger-pinky-l, .kb-key.finger-pinky-r { border-top: 2px solid var(--pink); }
-      .kb-key.finger-ring-l, .kb-key.finger-ring-r { border-top: 2px solid var(--gold); }
-      .kb-key.finger-mid-l, .kb-key.finger-mid-r { border-top: 2px solid var(--cyan); }
-      .kb-key.finger-idx-l, .kb-key.finger-idx-r { border-top: 2px solid var(--green); }
-      .kb-key.finger-thumb { border-top: 2px solid var(--purple); }
+      .kb-key.wide-12 { flex: 1.3; font-size: 11px; color: var(--text-secondary); }
+      .kb-key.wide-15 { flex: 1.5; font-size: 10px; color: var(--text-secondary); }
+      .kb-key.spacebar { flex: 4.4; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--text-secondary); }
 
-      /* Tactile marker for F and J */
+      /* Subtle Finger-Zone Top Indicator Strips */
+      .kb-key::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 28%;
+        right: 28%;
+        height: 2px;
+        border-radius: 2px;
+        opacity: 0.65;
+      }
+      .kb-key.finger-pinky-l::before, .kb-key.finger-pinky-r::before { background: var(--pink); }
+      .kb-key.finger-ring-l::before, .kb-key.finger-ring-r::before { background: var(--gold); }
+      .kb-key.finger-mid-l::before, .kb-key.finger-mid-r::before { background: var(--cyan); }
+      .kb-key.finger-idx-l::before, .kb-key.finger-idx-r::before { background: var(--green); }
+      .kb-key.finger-thumb::before { background: var(--purple); left: 40%; right: 40%; }
+
+      /* Tactile F & J Homing Ridges */
       .kb-key.tactile::after {
         content: '';
         position: absolute;
@@ -255,57 +456,40 @@
         height: 2px;
         background: var(--cyan);
         border-radius: 2px;
+        opacity: 0.85;
       }
 
-      /* Active target key pulsing highlight */
+      /* Active Target Next-Key Beacon */
       .kb-key.target-active {
-        background: rgba(255, 208, 0, 0.35) !important;
-        border-color: var(--gold) !important;
+        background: linear-gradient(180deg, rgba(245, 158, 11, 0.38) 0%, rgba(180, 83, 9, 0.45) 100%) !important;
+        border-color: var(--gold-bright) !important;
         color: #ffffff !important;
-        box-shadow: 0 0 14px var(--gold-glow), 0 3px 0 rgba(0, 0, 0, 0.5) !important;
-        transform: scale(1.08);
-        animation: pulseTargetKey 0.8s infinite alternate;
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
       }
 
-      @keyframes pulseTargetKey {
-        from { border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
-        to { border-color: #ffffff; box-shadow: 0 0 20px #ffffff; }
-      }
-
-      /* Key Pressed State */
-      .kb-key.pressed {
-        transform: translateY(3px) scale(0.96) !important;
-        box-shadow: 0 0 0 rgba(0,0,0,0) !important;
+      .kb-key:active, .kb-key.pressed {
+        transform: translateY(2px) scale(0.96) !important;
         background: var(--cyan) !important;
-        color: #050814 !important;
+        color: #040814 !important;
         border-color: #ffffff !important;
       }
 
-      /* Overdrive Mode HUD animations */
-      .overdrive-pulse {
-        animation: overdriveGlow 0.6s infinite alternate;
-      }
-
-      @keyframes overdriveGlow {
-        from { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
-        to { border-color: var(--pink); box-shadow: 0 0 25px var(--pink-glow); }
-      }
-
-      /* Modals (Title, Pause, GameOver) */
+      /* ====================================================
+         MODALS, BUTTONS & MICRO-RETICLES
+         ==================================================== */
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        z-index: 40;
-        background: rgba(4, 7, 18, 0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        z-index: 50;
+        background: rgba(3, 6, 16, 0.88);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: 14px;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.25s ease;
+        transition: opacity 0.22s ease;
+        overflow-y: auto;
       }
 
       .modal-backdrop.active {
@@ -314,415 +498,693 @@
       }
 
       .modal-card {
-        background: rgba(10, 16, 32, 0.95);
-        border: 1px solid rgba(0, 240, 255, 0.35);
-        border-radius: 20px;
-        box-shadow: 0 16px 64px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.15);
-        padding: 32px;
-        max-width: 620px;
+        background: linear-gradient(180deg, rgba(11, 18, 36, 0.98) 0%, rgba(6, 10, 22, 0.99) 100%);
+        border: 1px solid rgba(34, 211, 238, 0.28);
+        border-radius: 16px;
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        padding: 24px 20px;
+        max-width: 610px;
         width: 100%;
         text-align: center;
         position: relative;
-        transform: scale(0.95);
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(8px) scale(0.98);
+        transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @media (min-width: 640px) {
+        .modal-card {
+          padding: 28px 32px;
+        }
       }
 
       .modal-backdrop.active .modal-card {
-        transform: scale(1);
+        transform: translateY(0) scale(1);
       }
 
-      /* Mode Selector Cards */
+      /* Precision Architectural Corner Brackets */
+      .corner-brackets::before,
+      .corner-brackets::after {
+        content: '';
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        pointer-events: none;
+        border-color: rgba(34, 211, 238, 0.65);
+        border-style: solid;
+      }
+      .corner-brackets::before {
+        top: 8px;
+        left: 8px;
+        border-width: 1.5px 0 0 1.5px;
+        border-top-left-radius: 4px;
+      }
+      .corner-brackets::after {
+        bottom: 8px;
+        right: 8px;
+        border-width: 0 1.5px 1.5px 0;
+        border-bottom-right-radius: 4px;
+      }
+
+      /* Primary Tactical Action Button */
+      .cyber-btn {
+        background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 55%, #6366f1 100%);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        color: #ffffff;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        padding: 12px 22px;
+        border-radius: 10px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 8px 24px rgba(6, 182, 212, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.14s ease, filter 0.14s ease;
+        text-transform: uppercase;
+        touch-action: manipulation;
+      }
+
+      .cyber-btn:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 10px 28px rgba(34, 211, 238, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .cyber-btn:active {
+        transform: translateY(1px) scale(0.985);
+      }
+
+      .cyber-btn.secondary {
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.24);
+        box-shadow: none;
+        color: #cbd5e1;
+      }
+
+      .cyber-btn.secondary:hover {
+        background: rgba(30, 41, 59, 0.95);
+        border-color: rgba(34, 211, 238, 0.45);
+        color: #ffffff;
+        box-shadow: none;
+      }
+
+      /* Small Corner Leaderboard Toggle */
+      .lb-corner-btn {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        color: #fbbf24;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 5px 10px;
+        border-radius: 7px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        z-index: 5;
+        touch-action: manipulation;
+        transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+      }
+
+      .lb-corner-btn:hover {
+        background: rgba(34, 211, 238, 0.12);
+        border-color: var(--cyan);
+      }
+
+      .lb-corner-btn:active {
+        transform: scale(0.96);
+      }
+
+      /* Expandable Leaderboard Drawer */
+      .lb-drawer {
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 0;
+        background: rgba(5, 10, 22, 0.95);
+        border: 1px solid transparent;
+        border-radius: 10px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, margin 0.2s ease, padding 0.2s ease;
+        padding: 0 12px;
+      }
+
+      .lb-drawer.expanded {
+        max-height: 240px;
+        opacity: 1;
+        margin-top: 10px;
+        margin-bottom: 12px;
+        padding: 12px;
+        border-color: rgba(34, 211, 238, 0.28);
+        overflow-y: auto;
+      }
+
+      .lb-tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 9px;
+        overflow-x: auto;
+      }
+
+      .lb-tab-btn {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-weight: 700;
+        padding: 5px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        touch-action: manipulation;
+        transition: all 0.14s ease;
+      }
+
+      .lb-tab-btn.active {
+        background: rgba(34, 211, 238, 0.18);
+        color: var(--cyan);
+        border-color: var(--cyan);
+      }
+
+      .lb-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        text-align: left;
+        font-family: 'JetBrains Mono', monospace;
+        font-variant-numeric: tabular-nums;
+      }
+      .lb-table th {
+        color: var(--text-muted);
+        font-size: 9px;
+        font-weight: 700;
+        padding: 5px 6px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .lb-table td {
+        padding: 6px 6px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+        color: #cbd5e1;
+      }
+      .lb-table tr.highlight td {
+        color: #fbbf24;
+        background: rgba(245, 158, 11, 0.1);
+        font-weight: 800;
+      }
+
+      /* 4 Clean Tactical Mode Cards */
       .mode-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin: 20px 0;
+        gap: 9px;
+        margin: 14px 0 16px;
       }
 
-      @media (min-width: 600px) {
+      @media (min-width: 640px) {
         .mode-grid {
           grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
         }
       }
 
       .mode-card {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 12px;
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 11px;
+        padding: 13px 11px;
         cursor: pointer;
-        transition: all 0.18s ease;
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
         text-align: left;
+        touch-action: manipulation;
+        position: relative;
       }
 
       .mode-card:hover {
-        background: rgba(0, 240, 255, 0.1);
-        border-color: var(--cyan);
+        background: rgba(30, 41, 59, 0.85);
+        border-color: rgba(34, 211, 238, 0.45);
+        transform: translateY(-2px);
       }
 
       .mode-card.selected {
-        background: rgba(0, 240, 255, 0.18);
+        background: linear-gradient(160deg, rgba(34, 211, 238, 0.16) 0%, rgba(99, 102, 241, 0.14) 100%);
         border-color: var(--cyan);
-        box-shadow: 0 0 16px var(--cyan-glow);
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
       }
 
-      .mode-card .icon {
-        font-size: 24px;
-        margin-bottom: 6px;
-      }
-
-      .mode-card .title {
-        font-size: 13px;
-        font-weight: 700;
-        color: #ffffff;
-      }
-
-      .mode-card .desc {
-        font-size: 10px;
-        color: #94a3b8;
-        margin-top: 2px;
-        line-height: 1.2;
-      }
-
-      /* Health & EMP meters */
-      .meter-track {
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 999px;
-        overflow: hidden;
-      }
-
-      .meter-fill {
-        height: 100%;
-        border-radius: 999px;
-        transition: width 0.25s ease;
-      }
-
-      /* Rank Badge */
-      .rank-circle {
-        width: 72px;
-        height: 72px;
+      .mode-card .mode-check {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 38px;
-        font-weight: 800;
-        font-family: 'JetBrains Mono', monospace;
-        margin: 0 auto 12px;
-        box-shadow: 0 0 30px var(--cyan-glow);
+        background: rgba(148, 163, 184, 0.2);
+        transition: background 0.15s ease, box-shadow 0.15s ease;
       }
 
-      /* Low Shield Critical Warning Flasher */
+      .mode-card.selected .mode-check {
+        background: var(--cyan);
+        box-shadow: 0 0 8px var(--cyan);
+      }
+
+      /* Input Field Polish */
+      .cyber-input {
+        width: 100%;
+        background: rgba(2, 6, 23, 0.9);
+        border: 1.5px solid rgba(34, 211, 238, 0.4);
+        border-radius: 9px;
+        color: #ffffff;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 14px;
+        outline: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .cyber-input:focus {
+        border-color: var(--cyan);
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.16);
+      }
+
+      /* Enlistment Horror/Storm Crest Animations (GPU-only transform/opacity) */
+      @keyframes horrorEmblemPulse {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        8% { transform: scale(1.09) rotate(-3deg); opacity: 0.9; }
+        12% { transform: scale(0.95) rotate(3deg); opacity: 0.6; }
+        16% { transform: scale(1.11) rotate(-1deg); opacity: 1; }
+        70% { transform: scale(1.05) rotate(2deg); opacity: 0.85; }
+        74% { transform: scale(0.97) rotate(-2deg); opacity: 0.55; }
+        78% { transform: scale(1.07) rotate(0deg); opacity: 1; }
+      }
+
+      @keyframes horrorGlitchTitle {
+        0%, 100% {
+          text-shadow: 0 0 12px rgba(34, 211, 238, 0.8), 0 0 26px rgba(244, 63, 94, 0.7);
+          transform: translate(0, 0) skew(0deg);
+          color: #ffffff;
+        }
+        4% {
+          text-shadow: -4px 0 0 #f43f5e, 4px 0 0 #22d3ee, 0 0 26px #fbbf24;
+          transform: translate(-3px, 1px) skew(-2.5deg);
+          color: #fbbf24;
+        }
+        8% {
+          text-shadow: 4px 0 0 #f43f5e, -4px 0 0 #22d3ee;
+          transform: translate(3px, -1px) skew(2.5deg);
+          color: #fb7185;
+        }
+        12% {
+          text-shadow: 0 0 14px rgba(34, 211, 238, 0.9), 0 0 28px rgba(139, 92, 246, 0.8);
+          transform: translate(0, 0) skew(0deg);
+          color: #ffffff;
+        }
+        70% {
+          text-shadow: -5px 0 0 #ef4444, 5px 0 0 #22d3ee;
+          transform: translate(-2px, 1px) skew(2deg);
+          color: #67e8f9;
+        }
+        75% {
+          text-shadow: 0 0 12px rgba(34, 211, 238, 0.8), 0 0 26px rgba(244, 63, 94, 0.7);
+          transform: translate(0, 0) skew(0deg);
+          color: #ffffff;
+        }
+      }
+
+      @keyframes arcSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
       #dangerAlert {
         position: fixed;
         inset: 0;
-        border: 8px solid rgba(239, 68, 68, 0.7);
+        border: 5px solid rgba(244, 63, 94, 0.7);
         pointer-events: none;
-        z-index: 35;
+        z-index: 40;
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.2s ease;
       }
       #dangerAlert.active {
         opacity: 1;
-        animation: pulseDanger 0.8s infinite alternate;
       }
-      @keyframes pulseDanger {
-        from { opacity: 0.3; }
-        to { opacity: 0.9; }
+
+      /* Personal Best Telemetry Strip */
+      .pb-strip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+      .pb-strip strong {
+        color: var(--text-primary);
+        font-family: 'JetBrains Mono', monospace;
+        font-variant-numeric: tabular-nums;
       }
     </style>
   </head>
   <body>
-    <!-- Retro CRT scanline effect & vignette -->
-    <div class="scanlines"></div>
     <div class="vignette"></div>
     <div id="dangerAlert"></div>
 
-    <!-- 60fps Game Simulation Canvas -->
+    <!-- Hidden Native Mobile Input Sink -->
+    <input id="mobileKeySink" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:fixed; opacity:0; pointer-events:none; left:-9999px; top:-9999px;" />
+
+    <!-- 60fps Tactical Game Canvas -->
     <canvas id="gameCanvas"></canvas>
 
-    <!-- In-Game Low-Occlusion HUD Overlay -->
-    <div id="hudLayer" class="ui-layer" style="display: none;">
-      <!-- Top Status Cluster -->
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
-        <!-- Left: Shield Hull & Wave -->
-        <div class="cyber-panel pointer-auto" style="padding: 10px 14px; min-width: 170px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 1px;">SHIELD INTEGRITY</span>
-            <span id="hudShieldPercent" class="glow-cyan" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">100%</span>
+    <!-- Top-Docked Cockpit HUD -->
+    <div id="hudLayer" class="hud-root" style="display: none;">
+      <div class="hud-top-row">
+        <!-- Left: Operative & Shield Integrity -->
+        <div class="hud-card pointer-auto" style="display: flex; flex-direction: column; justify-content: center;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px; margin-bottom: 2px;">
+            <span id="hudOpName" style="font-size: 9.5px; font-weight: 800; color: #f8fafc; letter-spacing: 0.04em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 86px;">OPERATIVE</span>
+            <span id="hudShieldPercent" class="tabular" style="font-size: 9.5px; font-weight: 800; color: var(--cyan);">100%</span>
           </div>
-          <div class="meter-track" style="width: 100%; height: 8px;">
-            <div id="hudShieldFill" class="meter-fill" style="width: 100%; background: linear-gradient(90deg, #00f0ff, #8b5cf6);"></div>
+          <div class="meter-track" style="width: 100%; height: 3.5px;">
+            <div id="hudShieldFill" class="meter-fill" style="width: 100%; background: linear-gradient(90deg, #22d3ee, #6366f1);"></div>
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 5px; font-family: 'JetBrains Mono', monospace;">
-            <span id="hudWaveLabel">WAVE 01</span>
-            <span id="hudModeLabel" style="text-transform: uppercase;">ARCADE</span>
-          </div>
-        </div>
-
-        <!-- Center: Live Typing Speed & Accuracy Cluster -->
-        <div class="cyber-panel pointer-auto" style="padding: 8px 24px; display: flex; align-items: center; gap: 24px;">
-          <div style="text-align: center;">
-            <div style="font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 1px;">SPEED</div>
-            <div style="display: flex; align-items: baseline; justify-content: center; gap: 2px;">
-              <span id="hudWpm" class="glow-cyan" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 800;">0</span>
-              <span style="font-size: 11px; color: #64748b; font-weight: 600;">WPM</span>
-            </div>
-          </div>
-          <div style="width: 1px; height: 32px; background: rgba(255, 255, 255, 0.1);"></div>
-          <div style="text-align: center;">
-            <div style="font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 1px;">ACCURACY</div>
-            <div style="display: flex; align-items: baseline; justify-content: center; gap: 2px;">
-              <span id="hudAccuracy" class="glow-green" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 800;">100</span>
-              <span style="font-size: 11px; color: #64748b; font-weight: 600;">%</span>
-            </div>
+          <div class="tabular" style="display: flex; justify-content: space-between; align-items: center; gap: 4px; font-size: 8.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.1;">
+            <span id="hudSurvivalTimer" style="flex-shrink: 0;">00:00</span>
+            <span id="hudThreatBadge" style="color: var(--gold-bright); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">LVL 1 · RECON</span>
           </div>
         </div>
 
-        <!-- Right: Score, Streak Multiplier & Controls -->
-        <div class="cyber-panel pointer-auto" style="padding: 10px 14px; text-align: right; min-width: 170px;">
-          <div style="font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 1px;">SCORE</div>
-          <div id="hudScore" style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; color: #ffffff;">0</div>
-          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 4px;">
-            <span id="hudComboBadge" class="glow-gold" style="font-size: 11px; font-weight: 700; display: none;">1x COMBO</span>
-            <button id="btnMuteHud" class="icon-btn" title="Toggle Sound (Muted sounds won't interrupt typing!)" style="width: 28px; height: 28px; font-size: 12px;">🔊</button>
-            <button id="btnKeyboardToggle" class="icon-btn" title="Toggle Virtual Touch-Typing Keyboard (Tab)" style="width: 28px; height: 28px; font-size: 12px;">⌨️</button>
-            <button id="btnPauseHud" class="icon-btn" title="Pause Game (Esc)" style="width: 28px; height: 28px; font-size: 12px;">⏸</button>
+        <!-- Center: Speed, Accuracy & Streak -->
+        <div class="hud-card pointer-auto" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <div style="text-align: center;">
+            <div class="hud-label">Speed</div>
+            <div class="tabular" style="display: flex; align-items: baseline; justify-content: center; gap: 2px; margin-top: 1px;">
+              <span id="hudWpm" style="font-size: 14px; font-weight: 800; color: var(--cyan); line-height: 1;">0</span>
+              <span style="font-size: 8px; color: var(--text-muted); font-weight: 700;">WPM</span>
+            </div>
+          </div>
+          <div style="width: 1px; height: 20px; background: rgba(148, 163, 184, 0.16);"></div>
+          <div style="text-align: center;">
+            <div class="hud-label">Acc</div>
+            <div class="tabular" style="display: flex; align-items: baseline; justify-content: center; gap: 2px; margin-top: 1px;">
+              <span id="hudAccuracy" style="font-size: 14px; font-weight: 800; color: var(--green); line-height: 1;">100</span>
+              <span style="font-size: 8px; color: var(--text-muted); font-weight: 700;">%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Score & Precision Controls -->
+        <div class="hud-card pointer-auto" style="text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+          <div style="display: flex; align-items: baseline; justify-content: flex-end; gap: 5px; line-height: 1;">
+            <span id="hudComboBadge" class="tabular" style="font-size: 9px; font-weight: 800; color: var(--gold-bright); display: none;">1x</span>
+            <span id="hudScore" class="tabular" style="font-size: 14px; font-weight: 800; color: #ffffff; line-height: 1;">0</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
+            <button id="btnMuteHud" class="icon-btn" title="Toggle Audio">
+              <svg id="iconSoundOn" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+              <svg id="iconSoundOff" viewBox="0 0 24 24" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+            </button>
+            <button id="btnKeyboardToggle" class="icon-btn" title="Toggle On-Screen Keyboard">
+              <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"></path></svg>
+            </button>
+            <button id="btnPauseHud" class="icon-btn" title="Pause (Esc)">
+              <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Bottom Perimeter Cluster: Active Lock & EMP Superweapon -->
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 8px;">
-        <!-- Target Lock Reticle Preview -->
-        <div class="cyber-panel pointer-auto" style="padding: 8px 14px; min-width: 150px;">
-          <div style="font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 1px;">TARGET LOCK</div>
-          <div id="hudTargetPreview" style="font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-top: 2px;">
-            <span style="color: #64748b; font-style: italic; font-size: 12px;">Type any first letter...</span>
+      <!-- Target Lock Guidance + Finger Coach + EMP Reactor -->
+      <div class="hud-sub-bar pointer-auto">
+        <div style="display: flex; align-items: center; gap: 5px; min-width: 0; flex: 1;">
+          <span class="hud-label" style="white-space: nowrap;">Lock</span>
+          <div id="hudTargetPreview" class="tabular" style="font-size: 11px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.15;">
+            <span style="color: var(--text-muted); font-style: italic; font-size: 10px;">Type first letter...</span>
           </div>
         </div>
 
-        <!-- EMP Super-Bomb Meter -->
-        <div class="cyber-panel pointer-auto" style="padding: 8px 14px; text-align: right; min-width: 170px;">
-          <div id="hudEmpLabel" class="glow-gold" style="font-size: 10px; font-weight: 700; letter-spacing: 1px;">EMP CHARGE</div>
-          <div class="meter-track" style="width: 140px; height: 8px; margin-top: 4px; display: inline-block;">
-            <div id="hudEmpFill" class="meter-fill" style="width: 0%; background: linear-gradient(90deg, #ffd000, #ff007f);"></div>
-          </div>
-          <div id="hudEmpHint" style="font-size: 9px; color: #94a3b8; margin-top: 3px;">Press SPACE / ENTER when ready</div>
+        <div id="hudFingerCoach" class="tabular" style="font-size: 9px; font-weight: 700; display: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 115px; line-height: 1;">
+          <span id="hudFingerName" style="color: var(--gold-bright);">RIGHT INDEX [M]</span>
+        </div>
+
+        <button id="btnTriggerEmp" class="emp-reactor-btn pointer-auto" style="flex-shrink: 0;" title="EMP Blast (Strictly requires 100% full charge)">
+          <span id="empProgressBar" class="emp-reactor-progress"></span>
+          <span id="empReactorLabel" class="emp-reactor-label">EMP 0%</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- COMPACT 4-ROW TOUCH-FIRST KEYBOARD -->
+    <div id="virtualKeyboard" class="keyboard-container pointer-auto hidden">
+      <div class="kb-board-wrap">
+        <div class="kb-row">
+          <div class="kb-key finger-pinky-l" data-key="q">Q</div>
+          <div class="kb-key finger-ring-l" data-key="w">W</div>
+          <div class="kb-key finger-mid-l" data-key="e">E</div>
+          <div class="kb-key finger-idx-l" data-key="r">R</div>
+          <div class="kb-key finger-idx-l" data-key="t">T</div>
+          <div class="kb-key finger-idx-r" data-key="y">Y</div>
+          <div class="kb-key finger-idx-r" data-key="u">U</div>
+          <div class="kb-key finger-mid-r" data-key="i">I</div>
+          <div class="kb-key finger-ring-r" data-key="o">O</div>
+          <div class="kb-key finger-pinky-r" data-key="p">P</div>
+        </div>
+        <div class="kb-row">
+          <div class="kb-key finger-pinky-l" data-key="a">A</div>
+          <div class="kb-key finger-ring-l" data-key="s">S</div>
+          <div class="kb-key finger-mid-l" data-key="d">D</div>
+          <div class="kb-key finger-idx-l tactile" data-key="f">F</div>
+          <div class="kb-key finger-idx-l" data-key="g">G</div>
+          <div class="kb-key finger-idx-r" data-key="h">H</div>
+          <div class="kb-key finger-idx-r tactile" data-key="j">J</div>
+          <div class="kb-key finger-mid-r" data-key="k">K</div>
+          <div class="kb-key finger-ring-r" data-key="l">L</div>
+          <div class="kb-key wide-12 finger-pinky-r" data-key="Backspace">⌫</div>
+        </div>
+        <div class="kb-row">
+          <div class="kb-key finger-pinky-l" data-key="z">Z</div>
+          <div class="kb-key finger-ring-l" data-key="x">X</div>
+          <div class="kb-key finger-mid-l" data-key="c">C</div>
+          <div class="kb-key finger-idx-l" data-key="v">V</div>
+          <div class="kb-key finger-idx-l" data-key="b">B</div>
+          <div class="kb-key finger-idx-r" data-key="n">N</div>
+          <div class="kb-key finger-idx-r" data-key="m">M</div>
+          <div class="kb-key finger-mid-r" data-key=",">,</div>
+          <div class="kb-key finger-ring-r" data-key=".">.</div>
+          <div class="kb-key wide-12 finger-pinky-r" data-key="Enter">↵</div>
+        </div>
+        <div class="kb-row">
+          <button id="btnFocusMobileInput" class="kb-key wide-15" style="color: var(--cyan);" title="Open device native keyboard">Native</button>
+          <div class="kb-key spacebar finger-thumb" data-key=" ">SPACE · EMP [100%]</div>
+          <button id="btnHideKeyboard" class="kb-key wide-15" title="Hide virtual keyboard">Hide ▾</button>
         </div>
       </div>
     </div>
 
-    <!-- Virtual Touch-Typing Mechanical Keyboard Visualization -->
-    <div id="virtualKeyboard" class="keyboard-container pointer-auto">
-      <!-- Row 1: Numbers -->
-      <div class="kb-row">
-        <div class="kb-key finger-pinky-l" data-key="`">`</div>
-        <div class="kb-key finger-pinky-l" data-key="1">1</div>
-        <div class="kb-key finger-pinky-l" data-key="2">2</div>
-        <div class="kb-key finger-ring-l" data-key="3">3</div>
-        <div class="kb-key finger-mid-l" data-key="4">4</div>
-        <div class="kb-key finger-idx-l" data-key="5">5</div>
-        <div class="kb-key finger-idx-l" data-key="6">6</div>
-        <div class="kb-key finger-idx-r" data-key="7">7</div>
-        <div class="kb-key finger-idx-r" data-key="8">8</div>
-        <div class="kb-key finger-mid-r" data-key="9">9</div>
-        <div class="kb-key finger-ring-r" data-key="0">0</div>
-        <div class="kb-key finger-pinky-r" data-key="-">-</div>
-        <div class="kb-key finger-pinky-r" data-key="=">=</div>
-        <div class="kb-key wide-15 finger-pinky-r" data-key="Backspace">⌫</div>
-      </div>
-      <!-- Row 2: QWERTY -->
-      <div class="kb-row">
-        <div class="kb-key wide-15 finger-pinky-l" data-key="Tab">Tab</div>
-        <div class="kb-key finger-pinky-l" data-key="q">Q</div>
-        <div class="kb-key finger-ring-l" data-key="w">W</div>
-        <div class="kb-key finger-mid-l" data-key="e">E</div>
-        <div class="kb-key finger-idx-l" data-key="r">R</div>
-        <div class="kb-key finger-idx-l" data-key="t">T</div>
-        <div class="kb-key finger-idx-r" data-key="y">Y</div>
-        <div class="kb-key finger-idx-r" data-key="u">U</div>
-        <div class="kb-key finger-mid-r" data-key="i">I</div>
-        <div class="kb-key finger-ring-r" data-key="o">O</div>
-        <div class="kb-key finger-pinky-r" data-key="p">P</div>
-        <div class="kb-key finger-pinky-r" data-key="[">[</div>
-        <div class="kb-key finger-pinky-r" data-key="]">]</div>
-      </div>
-      <!-- Row 3: Home Row (with tactile marks on F & J) -->
-      <div class="kb-row">
-        <div class="kb-key wide-175 finger-pinky-l" data-key="CapsLock">Caps</div>
-        <div class="kb-key finger-pinky-l" data-key="a">A</div>
-        <div class="kb-key finger-ring-l" data-key="s">S</div>
-        <div class="kb-key finger-mid-l" data-key="d">D</div>
-        <div class="kb-key finger-idx-l tactile" data-key="f">F</div>
-        <div class="kb-key finger-idx-l" data-key="g">G</div>
-        <div class="kb-key finger-idx-r" data-key="h">H</div>
-        <div class="kb-key finger-idx-r tactile" data-key="j">J</div>
-        <div class="kb-key finger-mid-r" data-key="k">K</div>
-        <div class="kb-key finger-ring-r" data-key="l">L</div>
-        <div class="kb-key finger-pinky-r" data-key=";">;</div>
-        <div class="kb-key finger-pinky-r" data-key="'">'</div>
-        <div class="kb-key wide-175 finger-pinky-r" data-key="Enter">↵ Enter</div>
-      </div>
-      <!-- Row 4: Bottom Row (including the M key with right index finger!) -->
-      <div class="kb-row">
-        <div class="kb-key wide-2 finger-pinky-l" data-key="Shift">Shift</div>
-        <div class="kb-key finger-pinky-l" data-key="z">Z</div>
-        <div class="kb-key finger-ring-l" data-key="x">X</div>
-        <div class="kb-key finger-mid-l" data-key="c">C</div>
-        <div class="kb-key finger-idx-l" data-key="v">V</div>
-        <div class="kb-key finger-idx-l" data-key="b">B</div>
-        <div class="kb-key finger-idx-r" data-key="n">N</div>
-        <div class="kb-key finger-idx-r" data-key="m">M</div>
-        <div class="kb-key finger-mid-r" data-key=",">,</div>
-        <div class="kb-key finger-ring-r" data-key=".">.</div>
-        <div class="kb-key finger-pinky-r" data-key="/">/</div>
-        <div class="kb-key wide-2 finger-pinky-r" data-key="Shift">Shift</div>
-      </div>
-      <!-- Row 5: Space Bar -->
-      <div class="kb-row">
-        <div class="kb-key spacebar finger-thumb" data-key=" ">SPACE (EMP BLAST)</div>
-      </div>
-    </div>
+    <!-- OPERATIVE CLEARANCE GATE MODAL -->
+    <div id="enlistModal" class="modal-backdrop active">
+      <div class="modal-card corner-brackets" style="max-width: 440px;">
+        <!-- Animated Horror / Orbital Reticle Crest -->
+        <div style="width: 72px; height: 72px; margin: 0 auto 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle, rgba(244, 63, 94, 0.22) 0%, rgba(99, 102, 241, 0.25) 55%, rgba(4, 8, 20, 0.98) 88%); border: 2px solid var(--cyan); animation: horrorEmblemPulse 1.9s infinite ease-in-out;">
+          <div style="position: absolute; inset: -7px; border-radius: 50%; border: 2px dashed rgba(34, 211, 238, 0.75); animation: arcSpin 2.6s linear infinite; pointer-events: none;"></div>
+          <div style="position: absolute; inset: -13px; border-radius: 50%; border: 1.5px dotted rgba(244, 63, 94, 0.65); animation: arcSpin 4.2s linear infinite reverse; pointer-events: none;"></div>
+          <span style="font-size: 30px; display: inline-block;">💀</span>
+        </div>
 
-    <!-- Title Screen Modal -->
-    <div id="titleModal" class="modal-backdrop active">
-      <div class="modal-card">
-        <!-- Bespoke Logo -->
-        <svg viewBox="0 0 680 120" style="width: 100%; max-width: 480px; height: auto; margin: 0 auto 10px;">
-          <defs>
-            <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#00f0ff" />
-              <stop offset="50%" stopColor="#8b5cf6" />
-              <stop offset="100%" stopColor="#ff007f" />
-            </linearGradient>
-            <linearGradient id="strikeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ffd000" />
-              <stop offset="100%" stopColor="#ff007f" />
-            </linearGradient>
-          </defs>
-          <text x="30" y="88" fontFamily="'Chakra Petch', sans-serif" fontSize="90" fontWeight="800" letterSpacing="4" fill="url(#titleGrad)">TYPE</text>
-          <text x="270" y="88" fontFamily="'Chakra Petch', sans-serif" fontSize="90" fontWeight="800" letterSpacing="6" fill="url(#strikeGrad)">STRIKE</text>
-          <line x1="30" y1="106" x2="630" y2="106" stroke="#00f0ff" strokeWidth="3" opacity="0.7" />
-          <line x1="255" y1="112" x2="490" y2="112" stroke="#ffd000" strokeWidth="2.5" />
-        </svg>
+        <h2 style="font-size: clamp(1.7rem, 4.5vw, 2.25rem); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; animation: horrorGlitchTitle 2.2s infinite ease-in-out;">
+          TYPESTRIKE
+        </h2>
 
-        <p style="font-size: 14px; color: #94a3b8; margin-bottom: 16px;">
-          Fast-paced cyber keyboard typing arcade defense. Type words to fire plasma lasers, trigger EMP chain blasts, and master touch typing.
+        <p style="font-size: 12px; color: var(--text-secondary); margin: 4px 0 20px; line-height: 1.5;">
+          Enter a unique Operative Call-Sign to lock your rank on the global defense grid.
         </p>
 
-        <!-- High Score Pill -->
-        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 999px; padding: 4px 16px; margin-bottom: 16px;">
-          <span style="font-size: 12px; color: #94a3b8;">BEST RECORD:</span>
-          <span id="titleHighScore" class="glow-gold" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">0 PTS</span>
-          <span style="color: #64748b;">·</span>
-          <span id="titleBestWpm" class="glow-cyan" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">0 WPM</span>
+        <div style="text-align: left; margin-bottom: 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <label for="enlistNameInput" style="font-size: 10px; font-weight: 700; color: var(--cyan); letter-spacing: 0.08em; text-transform: uppercase;">Unique Call-Sign</label>
+            <span id="enlistCharCount" class="tabular" style="font-size: 10px; color: var(--text-muted);">0 / 14</span>
+          </div>
+          <input id="enlistNameInput" class="cyber-input" type="text" maxlength="14" placeholder="e.g. SHADOW_STRIKER" />
+          <div id="enlistError" style="font-size: 11px; color: var(--pink); margin-top: 6px; display: none; font-weight: 600;">* Call-Sign must be at least 2 characters and unique.</div>
         </div>
 
-        <!-- Game Mode Selection Grid -->
-        <div class="mode-grid">
-          <div class="mode-card selected" data-mode="arcade">
-            <div class="icon">🚀</div>
-            <div class="title">Arcade Defense</div>
-            <div class="desc">Multi-wave alien assault with powerups</div>
-          </div>
-          <div class="mode-card" data-mode="time-attack">
-            <div class="icon">⏱️</div>
-            <div class="title">Time Attack</div>
-            <div class="desc">60-second speed burst sprint</div>
-          </div>
-          <div class="mode-card" data-mode="code">
-            <div class="icon">💻</div>
-            <div class="title">Hacker Matrix</div>
-            <div class="desc">Keywords, syntax & algorithm terms</div>
-          </div>
-          <div class="mode-card" data-mode="home-row">
-            <div class="icon">🎯</div>
-            <div class="title">Home Row</div>
-            <div class="desc">Touch-typing finger positioning drills</div>
-          </div>
-        </div>
+        <button id="btnAuthorizeEnlist" class="cyber-btn" style="width: 100%; padding: 13px;">
+          <span>Enter Command Deck</span>
+        </button>
+      </div>
+    </div>
 
-        <!-- Launch Button -->
-        <button id="btnStartGame" class="cyber-btn" style="width: 100%; padding: 14px; font-size: 16px;">
-          <span>Launch Defense [Enter]</span>
+    <!-- MAIN TITLE / MISSION CONSOLE MODAL -->
+    <div id="titleModal" class="modal-backdrop">
+      <div class="modal-card corner-brackets">
+        <!-- Small Corner Expandable Rankings Button -->
+        <button class="lb-corner-btn" id="btnToggleLeaderboard" title="Expand / Collapse Rankings">
+          <span>🏆</span>
+          <span id="lbToggleText">Ranks ▾</span>
         </button>
 
-        <div style="font-size: 11px; color: #64748b; margin-top: 14px; font-family: 'JetBrains Mono', monospace;">
-          Type letters to fire · Space/Enter for EMP · Tab to toggle Virtual Keyboard · Esc to Pause
+        <!-- Clean Wordmark Lockup -->
+        <div style="margin: 2px auto 8px;">
+          <h1 style="font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 800; letter-spacing: 0.12em; line-height: 1.05; background: linear-gradient(135deg, #22d3ee 0%, #f8fafc 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            TYPESTRIKE
+          </h1>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <span>Operative <strong id="titleOpName" style="color: var(--cyan); font-family: 'JetBrains Mono', monospace;">PILOT</strong></span>
+            <span aria-hidden="true" style="color: var(--text-muted);">·</span>
+            <button id="btnEditProfile" style="background: none; border: none; color: var(--gold-bright); font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Change Name</button>
+          </div>
+        </div>
+
+        <!-- Personal Best Telemetry Strip -->
+        <div class="pb-strip">
+          <span>High Score <strong id="titleHighScore">0</strong></span>
+          <span aria-hidden="true" style="color: var(--text-muted);">·</span>
+          <span>Peak Speed <strong id="titleBestWpm">0 WPM</strong></span>
+        </div>
+
+        <!-- Expandable Leaderboard Drawer -->
+        <div id="leaderboardContent" class="lb-drawer">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 10px; font-weight: 800; color: #ffffff; letter-spacing: 0.08em; text-transform: uppercase;">Global Rankings</span>
+            <span id="lbCurrentModeBadge" style="font-size: 10px; font-weight: 700; color: var(--cyan);">Citadel Defense</span>
+          </div>
+          <div class="lb-tabs">
+            <button class="lb-tab-btn active" data-cat="arcade">Citadel Defense</button>
+            <button class="lb-tab-btn" data-cat="time-attack">Chrono Race</button>
+            <button class="lb-tab-btn" data-cat="code">Cyber Invasion</button>
+            <button class="lb-tab-btn" data-cat="home-row">Blind Tactile</button>
+          </div>
+          <div style="max-height: 150px; overflow-y: auto;">
+            <table class="lb-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Operative</th>
+                  <th>Score</th>
+                  <th>WPM</th>
+                  <th>Acc</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="lbTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4 Clean Mode Cards -->
+        <div class="mode-grid">
+          <div class="mode-card selected" data-mode="arcade">
+            <span class="mode-check"></span>
+            <div style="font-size: 20px; margin-bottom: 6px;">🚀</div>
+            <div style="font-size: 12px; font-weight: 800; color: #ffffff;">Citadel Defense</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Siege Survival</div>
+          </div>
+          <div class="mode-card" data-mode="time-attack">
+            <span class="mode-check"></span>
+            <div style="font-size: 20px; margin-bottom: 6px;">⏱️</div>
+            <div style="font-size: 12px; font-weight: 800; color: #ffffff;">Chrono Race</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">45s Time Sprint</div>
+          </div>
+          <div class="mode-card" data-mode="code">
+            <span class="mode-check"></span>
+            <div style="font-size: 20px; margin-bottom: 6px;">💻</div>
+            <div style="font-size: 12px; font-weight: 800; color: #ffffff;">Cyber Invasion</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">ICE & Malware</div>
+          </div>
+          <div class="mode-card" data-mode="home-row">
+            <span class="mode-check"></span>
+            <div style="font-size: 20px; margin-bottom: 6px;">🎯</div>
+            <div style="font-size: 12px; font-weight: 800; color: #ffffff;">Blind Tactile</div>
+            <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Touch Dojo</div>
+          </div>
+        </div>
+
+        <button id="btnStartGame" class="cyber-btn" style="width: 100%; padding: 13px;">
+          <span>Launch Mission</span>
+        </button>
+
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+          Type words to fire · Space discharges EMP at 100% · Threat escalates with survival time
         </div>
       </div>
     </div>
 
-    <!-- Pause Modal -->
+    <!-- PAUSE MODAL -->
     <div id="pauseModal" class="modal-backdrop">
-      <div class="modal-card" style="max-width: 400px;">
-        <div style="font-size: 28px; margin-bottom: 6px;">⏸️</div>
-        <h2 style="font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase;">TACTICAL PAUSE</h2>
-        <p style="font-size: 12px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; margin: 8px 0 20px;">
-          Simulation frozen. Re-calibrate your focus.
+      <div class="modal-card corner-brackets" style="max-width: 360px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: 0.08em; text-transform: uppercase;">Mission Paused</h2>
+        <p style="font-size: 12px; color: var(--text-secondary); margin: 6px 0 18px;">
+          Defense grid frozen. Resume when ready.
         </p>
-
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button id="btnResume" class="cyber-btn" style="width: 100%;">Resume Defense [Esc]</button>
-          <button id="btnRestartFromPause" class="cyber-btn" style="width: 100%; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2);">Restart Mission</button>
-          <button id="btnSoundTogglePause" class="cyber-btn" style="width: 100%; background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.15);">Sound: ON</button>
-          <button id="btnQuitToMenu" class="cyber-btn" style="width: 100%; background: transparent; border-color: transparent; color: #94a3b8; font-size: 12px;">Quit to Menu</button>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button id="btnResume" class="cyber-btn" style="width: 100%;">Resume [Esc]</button>
+          <button id="btnRestartFromPause" class="cyber-btn secondary" style="width: 100%;">Restart Mission</button>
+          <button id="btnQuitToMenu" class="cyber-btn secondary" style="width: 100%; background: transparent; border-color: transparent;">Return to Menu</button>
         </div>
       </div>
     </div>
 
-    <!-- Game Over / Victory Modal -->
+    <!-- GAME OVER / COMBAT DEBRIEF MODAL -->
     <div id="gameOverModal" class="modal-backdrop">
-      <div class="modal-card">
-        <div id="goRankCircle" class="rank-circle glow-cyan" style="border: 3px solid var(--cyan); background: rgba(0, 240, 255, 0.15);">S</div>
-        <h2 id="goTitle" style="font-size: 26px; font-weight: 800; color: #ffffff; text-transform: uppercase;">BASE COMPROMISED</h2>
-        <p id="goSubtitle" style="font-size: 13px; color: #94a3b8; margin: 4px 0 20px;">Review your tactical combat data below.</p>
+      <div class="modal-card corner-brackets" style="max-width: 480px;">
+        <div id="goRankCircle" class="tabular" style="width: 62px; height: 62px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; margin: 0 auto 10px; border: 2.5px solid var(--cyan); color: var(--cyan); background: rgba(34, 211, 238, 0.1);">S</div>
+        <h2 id="goTitle" style="font-size: 22px; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 0.04em;">Mission Complete</h2>
+        <p id="goSubtitle" style="font-size: 12px; color: var(--text-secondary); margin: 4px 0 16px;">Telemetry synced with rankings.</p>
 
-        <!-- Stats Grid -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; text-align: left;">
-          <div class="cyber-panel" style="padding: 12px;">
-            <div style="font-size: 10px; font-weight: 700; color: #94a3b8;">FINAL SCORE</div>
-            <div id="goScore" class="glow-gold" style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800;">0</div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; text-align: left;">
+          <div class="hud-card" style="padding: 10px 12px;">
+            <div class="hud-label">Final Score</div>
+            <div id="goScore" class="tabular" style="font-size: 20px; font-weight: 800; color: var(--gold-bright); margin-top: 2px;">0</div>
           </div>
-          <div class="cyber-panel" style="padding: 12px;">
-            <div style="font-size: 10px; font-weight: 700; color: #94a3b8;">PEAK SPEED</div>
-            <div id="goWpm" class="glow-cyan" style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800;">0 <span style="font-size: 11px; color: #64748b;">WPM</span></div>
+          <div class="hud-card" style="padding: 10px 12px;">
+            <div class="hud-label">Peak Speed</div>
+            <div id="goWpm" class="tabular" style="font-size: 20px; font-weight: 800; color: var(--cyan); margin-top: 2px;">0 <span style="font-size: 10px; color: var(--text-muted);">WPM</span></div>
           </div>
-          <div class="cyber-panel" style="padding: 12px;">
-            <div style="font-size: 10px; font-weight: 700; color: #94a3b8;">ACCURACY</div>
-            <div id="goAccuracy" class="glow-green" style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800;">100%</div>
+          <div class="hud-card" style="padding: 10px 12px;">
+            <div class="hud-label">Accuracy</div>
+            <div id="goAccuracy" class="tabular" style="font-size: 20px; font-weight: 800; color: var(--green); margin-top: 2px;">100%</div>
           </div>
-          <div class="cyber-panel" style="padding: 12px;">
-            <div style="font-size: 10px; font-weight: 700; color: #94a3b8;">MAX COMBO</div>
-            <div id="goCombo" class="glow-pink" style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800;">1x</div>
+          <div class="hud-card" style="padding: 10px 12px;">
+            <div class="hud-label">Board Rank</div>
+            <div id="goBoardRank" class="tabular" style="font-size: 20px; font-weight: 800; color: var(--pink); margin-top: 2px;">#1</div>
           </div>
         </div>
 
-        <!-- Weak Keys Diagnostic -->
-        <div class="cyber-panel" style="padding: 10px 14px; margin-bottom: 20px; text-align: left;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 11px; font-weight: 700; color: #94a3b8;">TOUCH-TYPING FRICTION KEYS:</span>
-            <span id="goWeakKeys" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #ffd000;">None (Flawless precision!)</span>
+        <div class="hud-card" style="padding: 9px 12px; margin-bottom: 16px; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+            <span class="hud-label">Friction Keys</span>
+            <span id="goWeakKeys" class="tabular" style="font-size: 11px; font-weight: 700; color: var(--gold-bright);">None (Flawless)</span>
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div style="display: flex; gap: 10px;">
-          <button id="btnPlayAgain" class="cyber-btn" style="flex: 1; padding: 12px;">Play Again [Enter]</button>
-          <button id="btnGoMenu" class="cyber-btn" style="background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); padding: 12px 20px;">Menu</button>
+        <div style="display: flex; gap: 8px;">
+          <button id="btnPlayAgain" class="cyber-btn" style="flex: 1;">Deploy Again [Enter]</button>
+          <button id="btnGoMenu" class="cyber-btn secondary" style="padding: 12px 18px;">Menu</button>
         </div>
       </div>
     </div>
 
-    <!-- Complete Procedural Audio, Word Banks, 60fps Loop & Logic in Pure Script -->
+    <!-- High-Performance 60FPS Space Typing Engine -->
     <script>
       (function() {
         "use strict";
 
         // ==========================================
-        // 1. PROCEDURAL WEB AUDIO SYNTHESIZER
+        // 1. PROCEDURAL AUDIO SYNTHESIZER
         // ==========================================
         class SoundSynth {
           constructor() {
@@ -745,166 +1207,154 @@
             return this.isMuted;
           }
 
-          // Mechanical keypress click (pitch varies slightly for authenticity)
-          playKeyClick(char) {
+          playKeyClick() {
             if (this.isMuted) return;
-            this.init();
+            if (!this.ctx) this.init();
             if (!this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
-              const baseFreq = 700 + Math.random() * 300;
               osc.type = "sine";
-              osc.frequency.setValueAtTime(baseFreq, now);
-              osc.frequency.exponentialRampToValueAtTime(150, now + 0.035);
-
-              gain.gain.setValueAtTime(0.06, now);
-              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
-
+              osc.frequency.setValueAtTime(760 + Math.random() * 200, now);
+              osc.frequency.exponentialRampToValueAtTime(120, now + 0.03);
+              gain.gain.setValueAtTime(0.055, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(now);
-              osc.stop(now + 0.04);
+              osc.stop(now + 0.035);
             } catch(e) {}
           }
 
-          // Miss buzzer
           playError() {
-            if (this.isMuted) return;
-            this.init();
-            if (!this.ctx) return;
+            if (this.isMuted || !this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
               osc.type = "sawtooth";
-              osc.frequency.setValueAtTime(130, now);
-              osc.frequency.setValueAtTime(100, now + 0.06);
-
+              osc.frequency.setValueAtTime(125, now);
+              osc.frequency.setValueAtTime(75, now + 0.05);
               gain.gain.setValueAtTime(0.09, now);
-              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(now);
-              osc.stop(now + 0.1);
+              osc.stop(now + 0.095);
             } catch(e) {}
           }
 
-          // Laser blast when destroying letter
-          playLaser() {
-            if (this.isMuted) return;
-            this.init();
-            if (!this.ctx) return;
+          playLaser(comboVal) {
+            if (this.isMuted || !this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
+              const pitch = Math.min((comboVal || 1) * 14, 340);
               osc.type = "sine";
-              osc.frequency.setValueAtTime(1100, now);
-              osc.frequency.exponentialRampToValueAtTime(250, now + 0.07);
-
-              gain.gain.setValueAtTime(0.12, now);
-              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
-
+              osc.frequency.setValueAtTime(1040 + pitch, now);
+              osc.frequency.exponentialRampToValueAtTime(220, now + 0.06);
+              gain.gain.setValueAtTime(0.1, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(now);
-              osc.stop(now + 0.075);
+              osc.stop(now + 0.07);
             } catch(e) {}
           }
 
-          // Word destroyed explosion with sub-bass
-          playExplosion(combo) {
-            if (this.isMuted) return;
-            this.init();
-            if (!this.ctx) return;
+          playExplosion(comboVal) {
+            if (this.isMuted || !this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
-              const pitchBoost = Math.min((combo || 1) * 15, 200);
+              const pitchBoost = Math.min((comboVal || 1) * 8, 140);
               osc.type = "triangle";
-              osc.frequency.setValueAtTime(200 + pitchBoost, now);
-              osc.frequency.exponentialRampToValueAtTime(40, now + 0.25);
-
-              gain.gain.setValueAtTime(0.2, now);
-              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-
+              osc.frequency.setValueAtTime(210 + pitchBoost, now);
+              osc.frequency.exponentialRampToValueAtTime(34, now + 0.22);
+              gain.gain.setValueAtTime(0.17, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(now);
-              osc.stop(now + 0.26);
+              osc.stop(now + 0.23);
             } catch(e) {}
           }
 
-          // EMP full-screen wipe blast
           playEMP() {
-            if (this.isMuted) return;
-            this.init();
-            if (!this.ctx) return;
+            if (this.isMuted || !this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
               osc.type = "sine";
               osc.frequency.setValueAtTime(90, now);
-              osc.frequency.exponentialRampToValueAtTime(1400, now + 0.3);
-              osc.frequency.exponentialRampToValueAtTime(60, now + 0.65);
-
+              osc.frequency.exponentialRampToValueAtTime(1400, now + 0.25);
+              osc.frequency.exponentialRampToValueAtTime(45, now + 0.6);
               gain.gain.setValueAtTime(0.25, now);
-              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.62);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(now);
-              osc.stop(now + 0.7);
+              osc.stop(now + 0.65);
             } catch(e) {}
           }
 
-          // Powerup chime
           playPowerup() {
-            if (this.isMuted) return;
-            this.init();
-            if (!this.ctx) return;
+            if (this.isMuted || !this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = "sine";
-                osc.frequency.setValueAtTime(freq, now + idx * 0.05);
-                gain.gain.setValueAtTime(0.1, now + idx * 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.12);
+                osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+                gain.gain.setValueAtTime(0.08, now + idx * 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.09);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
-                osc.start(now + idx * 0.05);
-                osc.stop(now + idx * 0.05 + 0.13);
+                osc.start(now + idx * 0.04);
+                osc.stop(now + idx * 0.04 + 0.1);
               });
             } catch(e) {}
           }
 
-          // Base damage thump
           playDamage() {
-            if (this.isMuted) return;
-            this.init();
-            if (!this.ctx) return;
+            if (this.isMuted || !this.ctx) return;
             try {
               const now = this.ctx.currentTime;
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
               osc.type = "sawtooth";
-              osc.frequency.setValueAtTime(90, now);
-              osc.frequency.exponentialRampToValueAtTime(25, now + 0.35);
-
-              gain.gain.setValueAtTime(0.25, now);
-              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-
+              osc.frequency.setValueAtTime(95, now);
+              osc.frequency.exponentialRampToValueAtTime(28, now + 0.3);
+              gain.gain.setValueAtTime(0.2, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(now);
-              osc.stop(now + 0.4);
+              osc.stop(now + 0.34);
+            } catch(e) {}
+          }
+
+          playThreatSiren() {
+            if (this.isMuted || !this.ctx) return;
+            try {
+              const now = this.ctx.currentTime;
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = "sawtooth";
+              osc.frequency.setValueAtTime(320, now);
+              osc.frequency.linearRampToValueAtTime(620, now + 0.2);
+              osc.frequency.linearRampToValueAtTime(320, now + 0.4);
+              gain.gain.setValueAtTime(0.14, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now);
+              osc.stop(now + 0.44);
             } catch(e) {}
           }
         }
@@ -912,157 +1362,505 @@
         const sound = new SoundSynth();
 
         // ==========================================
-        // 2. WORD LIBRARIES (COMPREHENSIVE)
+        // 2. TOUCH-TYPING FINGER MAPPER
         // ==========================================
-        const WORDS_ARCADE = [
-          // Words with M and all alphabet
-          "matrix", "comet", "plasma", "laser", "mission", "cyber", "radar", "emp",
-          "system", "module", "missile", "memory", "machine", "master", "flame", "beam",
-          "nexus", "orbit", "quantum", "rocket", "shield", "turret", "vector", "warp",
-          "alarm", "armor", "blaster", "cannon", "core", "drone", "energy", "force",
-          "grid", "hull", "impact", "kinetic", "omega", "pulse", "quasar", "signal",
-          "titan", "ultra", "vortex", "weapon", "xenon", "yield", "zenith", "apex",
-          "beacon", "circuit", "damage", "flux", "gravity", "hazard", "ion", "laser",
-          "meteor", "nanite", "photon", "relay", "sector", "thrust", "velocity", "wave"
-        ];
+        function getFingerForChar(char) {
+          if (!char) return null;
+          const c = char.toLowerCase();
+          if ("qaz".includes(c)) return { name: "LEFT PINKY", color: "var(--pink)" };
+          if ("wsx".includes(c)) return { name: "LEFT RING", color: "var(--gold-bright)" };
+          if ("edc".includes(c)) return { name: "LEFT MIDDLE", color: "var(--cyan)" };
+          if ("rfvtgb".includes(c)) return { name: "LEFT INDEX", color: "var(--green)" };
+          if ("yuhnjm".includes(c)) return { name: "RIGHT INDEX", color: "var(--green)" };
+          if ("ik,".includes(c)) return { name: "RIGHT MIDDLE", color: "var(--cyan)" };
+          if ("ol.".includes(c)) return { name: "RIGHT RING", color: "var(--gold-bright)" };
+          if ("p;".includes(c)) return { name: "RIGHT PINKY", color: "var(--pink)" };
+          if (c === " ") return { name: "THUMB (SPACE)", color: "var(--purple)" };
+          return { name: "KEY", color: "#94a3b8" };
+        }
 
+        // ==========================================
+        // 3. UNIQUE OPERATIVE IDENTITY & LEADERBOARDS
+        // ==========================================
+        const DEFAULT_LEADERBOARDS = {
+          arcade: [
+            { name: "CYBER_VIPER", score: 28450, wpm: 88, acc: 97, time: "02:45" },
+            { name: "NEO_STRIKE",  score: 22100, wpm: 76, acc: 95, time: "02:18" },
+            { name: "LASER_BLAST", score: 18900, wpm: 68, acc: 93, time: "01:52" },
+            { name: "GRID_WARDEN", score: 15400, wpm: 62, acc: 91, time: "01:34" },
+            { name: "NOVA_PILOT",  score: 11200, wpm: 54, acc: 89, time: "01:12" }
+          ],
+          "time-attack": [
+            { name: "CHRONO_ACE",  score: 31200, wpm: 104, acc: 98, time: "00:45" },
+            { name: "QUICKSILVER", score: 26500, wpm: 92,  acc: 96, time: "00:45" },
+            { name: "WARP_RUNNER", score: 21800, wpm: 84,  acc: 94, time: "00:45" },
+            { name: "SONIC_PULSE", score: 17300, wpm: 74,  acc: 92, time: "00:45" },
+            { name: "SPRINTER_X",  score: 13900, wpm: 65,  acc: 90, time: "00:45" }
+          ],
+          code: [
+            { name: "NULL_PTR",    score: 34500, wpm: 96,  acc: 99, time: "03:15" },
+            { name: "ASYNC_AWAIT", score: 27900, wpm: 85,  acc: 95, time: "02:40" },
+            { name: "BYTE_BREAKER",score: 23100, wpm: 78,  acc: 94, time: "02:05" },
+            { name: "KERNEL_DEV",  score: 18600, wpm: 70,  acc: 92, time: "01:42" },
+            { name: "VIM_GHOST",   score: 14200, wpm: 63,  acc: 91, time: "01:15" }
+          ],
+          "home-row": [
+            { name: "TOUCH_SENSEI",score: 29800, wpm: 94, acc: 99, time: "03:00" },
+            { name: "HOMING_BUMP", score: 24200, wpm: 82, acc: 98, time: "02:22" },
+            { name: "BLIND_STRIKE",score: 20100, wpm: 75, acc: 96, time: "01:54" },
+            { name: "CADENCE_PRO", score: 16400, wpm: 66, acc: 94, time: "01:30" },
+            { name: "ROW_GUARD",   score: 12500, wpm: 58, acc: 92, time: "01:05" }
+          ]
+        };
+
+        let leaderboards = loadLeaderboards();
+        let activeLbCategory = "arcade";
+        let operativeProfile = { name: "" };
+        let hasSavedProfile = false;
+        let highScore = parseInt(localStorage.getItem("typestrike_high_score") || "0", 10);
+        let bestWpm = parseInt(localStorage.getItem("typestrike_best_wpm") || "0", 10);
+
+        function loadLeaderboards() {
+          try {
+            const raw = localStorage.getItem("typestrike_leaderboards_v5");
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              for (const k of Object.keys(parsed)) {
+                const map = new Map();
+                for (const item of parsed[k]) {
+                  const upper = (item.name || "").toUpperCase().trim();
+                  if (!upper) continue;
+                  const existing = map.get(upper);
+                  if (!existing || item.score > existing.score) {
+                    map.set(upper, { ...item, name: upper });
+                  }
+                }
+                parsed[k] = Array.from(map.values()).sort((a, b) => b.score - a.score || b.wpm - a.wpm);
+              }
+              return parsed;
+            }
+          } catch(e) {}
+          return JSON.parse(JSON.stringify(DEFAULT_LEADERBOARDS));
+        }
+
+        function saveLeaderboards() {
+          try {
+            localStorage.setItem("typestrike_leaderboards_v5", JSON.stringify(leaderboards));
+          } catch(e) {}
+        }
+
+        function isNameTakenByOther(candidateName) {
+          const clean = candidateName.toUpperCase().trim();
+          if (hasSavedProfile && operativeProfile.name === clean) return false;
+          for (const cat of Object.keys(leaderboards)) {
+            const list = leaderboards[cat] || [];
+            if (list.some(entry => (entry.name || "").toUpperCase().trim() === clean)) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        function loadOperativeProfile() {
+          try {
+            const raw = localStorage.getItem("typestrike_operative_profile");
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed.name && parsed.name.trim().length >= 2) {
+                operativeProfile = { name: parsed.name.toUpperCase().trim().slice(0, 14) };
+                hasSavedProfile = true;
+                return true;
+              }
+            }
+          } catch(e) {}
+          return false;
+        }
+
+        function saveOperativeProfile(name) {
+          const oldName = operativeProfile.name;
+          const clean = name.toUpperCase().trim().replace(/\s+/g, "_").slice(0, 14);
+          operativeProfile = { name: clean };
+          hasSavedProfile = true;
+
+          if (oldName && oldName !== clean) {
+            for (const cat of Object.keys(leaderboards)) {
+              const list = leaderboards[cat] || [];
+              list.forEach(r => {
+                if (r.name === oldName) r.name = clean;
+              });
+            }
+            saveLeaderboards();
+          }
+
+          try {
+            localStorage.setItem("typestrike_operative_profile", JSON.stringify(operativeProfile));
+          } catch(e) {}
+          updateOperativeHUD();
+        }
+
+        function updateOperativeHUD() {
+          const hudName = document.getElementById("hudOpName");
+          const titleName = document.getElementById("titleOpName");
+          const titleHigh = document.getElementById("titleHighScore");
+          const titleBest = document.getElementById("titleBestWpm");
+          if (hudName) hudName.textContent = operativeProfile.name;
+          if (titleName) titleName.textContent = operativeProfile.name;
+          if (titleHigh) titleHigh.textContent = highScore.toLocaleString();
+          if (titleBest) titleBest.textContent = `${bestWpm} WPM`;
+        }
+
+        function renderLeaderboardTable(cat) {
+          activeLbCategory = cat;
+          const titles = {
+            arcade: "Citadel Defense",
+            "time-attack": "Chrono Race",
+            code: "Cyber Invasion",
+            "home-row": "Blind Tactile"
+          };
+          const badgeEl = document.getElementById("lbCurrentModeBadge");
+          if (badgeEl) badgeEl.textContent = titles[cat] || cat;
+
+          document.querySelectorAll(".lb-tab-btn").forEach(btn => {
+            if (btn.getAttribute("data-cat") === cat) btn.classList.add("active");
+            else btn.classList.remove("active");
+          });
+
+          const tbody = document.getElementById("lbTableBody");
+          if (!tbody) return;
+          const rows = (leaderboards[cat] || []).slice().sort((a, b) => b.score - a.score || b.wpm - a.wpm);
+          const currentOp = (operativeProfile.name || "").toUpperCase().trim();
+
+          tbody.innerHTML = rows.map((r, idx) => {
+            const rankNum = idx + 1;
+            const isMe = currentOp && r.name === currentOp;
+            const rankBadge = rankNum === 1 ? "🥇 #1" : rankNum === 2 ? "🥈 #2" : rankNum === 3 ? "🥉 #3" : `#${rankNum}`;
+            return `
+              <tr class="${isMe ? 'highlight' : ''}">
+                <td style="font-weight: 800;">${rankBadge}</td>
+                <td style="color: ${isMe ? '#fbbf24' : '#22d3ee'}; font-weight: 700;">${r.name}${isMe ? " (YOU)" : ""}</td>
+                <td style="font-weight: 800; color: #ffffff;">${Number(r.score).toLocaleString()}</td>
+                <td style="color: #67e8f9;">${r.wpm}</td>
+                <td style="color: #34d399;">${r.acc}%</td>
+                <td style="color: #94a3b8;">${r.time || "00:00"}</td>
+              </tr>
+            `;
+          }).join("");
+        }
+
+        function recordToLeaderboard(mode, scoreVal, wpmVal, accVal, timeStr) {
+          const list = leaderboards[mode] || [];
+          const opName = (operativeProfile.name || "OPERATIVE").toUpperCase().trim();
+          const existingIdx = list.findIndex(r => (r.name || "").toUpperCase().trim() === opName);
+
+          if (existingIdx !== -1) {
+            const prev = list[existingIdx];
+            if (scoreVal >= prev.score) {
+              list[existingIdx] = {
+                name: opName,
+                score: scoreVal,
+                wpm: Math.max(prev.wpm || 0, wpmVal),
+                acc: accVal,
+                time: timeStr
+              };
+            }
+          } else {
+            list.push({
+              name: opName,
+              score: scoreVal,
+              wpm: wpmVal,
+              acc: accVal,
+              time: timeStr
+            });
+          }
+
+          list.sort((a, b) => b.score - a.score || b.wpm - a.wpm || b.acc - a.acc);
+          leaderboards[mode] = list;
+          saveLeaderboards();
+          renderLeaderboardTable(mode);
+
+          const myRank = list.findIndex(r => r.name === opName) + 1;
+          return { rank: myRank, total: list.length };
+        }
+
+        // ==========================================
+        // 4. EXPANDED RANDOMIZED WORD GENERATOR
+        // ==========================================
+        const WORDS_ARCADE_SHORT = [
+          "ion", "aim", "beam", "core", "hull", "warp", "grid", "fire", "bolt", "star", "lock", "pod", "arc",
+          "nova", "flux", "edge", "scan", "ping", "byte", "node", "volt", "zone", "fuse", "halo", "glow",
+          "wing", "tail", "jet", "ray", "orb", "axis", "peak", "rift", "void", "dash", "rush", "fury",
+          "sync", "link", "wave", "drop", "zoom", "spin", "flip", "burn", "heat", "cold", "dust", "mist"
+        ];
+        const WORDS_ARCADE_MED = [
+          "matrix", "plasma", "cannon", "missile", "shield", "turret", "vector", "blaster", "energy", "kinetic",
+          "pulse", "barrier", "beacon", "reactor", "photon", "thrust", "orbit", "nebula", "cosmos", "pulsar",
+          "quasar", "zenith", "horizon", "phantom", "specter", "stealth", "ranger", "sentry", "vortex", "cyclone",
+          "typhoon", "ignite", "shatter", "breach", "defend", "launch", "impact", "sector", "galaxy", "titan"
+        ];
+        const WORDS_ARCADE_LONG = [
+          "dreadnought", "apocalypse", "annihilator", "battleship", "juggernaut", "hyperdrive", "cybernetics",
+          "singularity", "overcharge", "interstellar", "constellation", "supernova", "accelerator", "terminator",
+          "exosphere", "tachyon", "electromagnet", "chronosphere", "starfighter", "commandant"
+        ];
+        const WORDS_CLUSTERS = [
+          "meteor", "comet", "debris", "crater", "fragment", "bolide", "asteroid", "shrapnel", "cluster", "obsidian"
+        ];
+        const WORDS_SHARDS = [
+          "ash", "ore", "ice", "arc", "gas", "bit", "red", "hex", "cog", "rim", "dot", "pip"
+        ];
+        const WORDS_CHRONO = [
+          "chrono", "warp", "quantum", "crystal", "tempo", "clock", "swift", "flash", "instant", "sprint",
+          "velocity", "momentum", "impulse", "surge", "cadence", "rhythm", "reflex", "bullet", "streak"
+        ];
+        const WORDS_DRAIN = [
+          "leech", "phantom", "void", "drain", "abyss", "decay", "wither", "entropy", "siphon", "shadow"
+        ];
         const WORDS_CODE = [
-          "function", "variable", "interface", "component", "async", "await", "import",
-          "export", "return", "promise", "module", "memory", "method", "param", "matrix",
-          "typescript", "javascript", "react", "express", "server", "client", "boolean",
-          "number", "string", "symbol", "object", "array", "filter", "reduce", "render",
-          "callback", "closure", "database", "endpoint", "package", "runtime", "stream",
-          "terminal", "payload", "request", "response", "compiler", "iterator", "syntax"
+          "function", "variable", "interface", "component", "async", "await", "import", "export", "return",
+          "promise", "module", "memory", "method", "param", "typescript", "javascript", "boolean", "number",
+          "symbol", "callback", "compiler", "pointer", "syntax", "runtime", "closure", "iterator", "protocol",
+          "endpoint", "payload", "socket", "buffer", "stream", "thread", "process", "kernel", "registry",
+          "binary", "cipher", "schema", "mutation", "reducer", "dispatch", "render", "viewport", "canvas"
+        ];
+        const WORDS_FIREWALL = [
+          "firewall", "sentinel", "decrypt", "icebreaker", "lockdown", "safeguard", "encrypt", "checksum"
+        ];
+        const WORDS_WORM = [
+          "malware", "trojan", "worm", "daemon", "glitch", "packet", "rootkit", "exploit", "spoof", "inject"
+        ];
+        const WORDS_HOME_ROW_BASE = [
+          "as", "all", "ask", "lad", "fall", "sad", "lass", "flask", "glad", "salad", "dash", "half", "hall",
+          "flash", "slash", "faqs", "halls", "fads", "adds", "flak", "dads", "sash", "has", "had", "ash",
+          "jag", "lag", "flag", "gash", "hash", "lash", "shad", "glass", "alfalfa", "skald", "shall"
         ];
 
-        const WORDS_HOME_ROW = [
-          "as", "all", "ask", "lad", "fall", "sad", "lass", "flask", "glad", "salad",
-          "dash", "half", "hall", "flash", "slash", "jak", "kaff", "faqs", "halls",
-          "fads", "adds", "skad", "kala", "flak", "dads", "sash", "has", "had", "ash"
-        ];
+        function generateRandomHomeRowWord(len) {
+          const letters = "asdfghjkl";
+          let out = "";
+          for (let i = 0; i < len; i++) {
+            out += (i % 2 === 1 && Math.random() < 0.5) ? "a" : letters[Math.floor(Math.random() * letters.length)];
+          }
+          return out;
+        }
+
+        const SYLLABLES_A = ["cy", "ne", "ve", "ka", "ze", "ra", "xo", "hy", "tri", "pro", "syn", "hyper", "cryo", "pyro", "aero", "exo"];
+        const SYLLABLES_B = ["ber", "on", "x", "ra", "tor", "nix", "plex", "tron", "core", "flux", "blast", "wave", "byte", "spark", "lock", "guard"];
+        function generateProceduralCyberWord() {
+          return SYLLABLES_A[Math.floor(Math.random() * SYLLABLES_A.length)] +
+                 SYLLABLES_B[Math.floor(Math.random() * SYLLABLES_B.length)];
+        }
 
         // ==========================================
-        // 3. GAME STATE & VARIABLES
+        // 5. GAME STATE & CACHED HUD ELEMENTS
         // ==========================================
-        let gameState = "title"; // "title" | "playing" | "paused" | "gameover"
+        let gameState = "enlist";
         let gameMode = "arcade";
+
         let score = 0;
         let wpm = 0;
         let accuracy = 100;
         let combo = 1;
         let maxCombo = 1;
         let hullHealth = 100;
-        let wave = 1;
         let empCharge = 0;
-        let timeLeft = 60;
-        let wordsDestroyed = 0;
+        let threatLevel = 1;
+        let timeLeft = 45;
+        let survivalSeconds = 0;
+        let gameStartTime = 0;
         let totalCorrectKeystrokes = 0;
         let totalErrors = 0;
-        let gameStartTime = 0;
-        let lastSpawnTime = 0;
-        let freezeTimer = 0;
-        let empShockwaveRadius = 0;
-        let shake = 0;
-
-        // Weak keys tracking
         const errorKeyCounts = {};
 
-        // Active targets and visual FX
         let targets = [];
         let activeTargetId = null;
         let lasers = [];
         let particles = [];
+        let shockwaves = [];
         let floatingTexts = [];
+        let empShockwaveRadius = 0;
+        let shake = 0;
+        let lastSpawnTime = 0;
+        let lastTurretRecoil = 0;
+        let muzzleFlashAlpha = 0;
 
-        // High scores
-        let highScore = parseInt(localStorage.getItem("typestrike_high_score") || "0", 10);
-        let bestWpm = parseInt(localStorage.getItem("typestrike_best_wpm") || "0", 10);
+        const domHudLayer = document.getElementById("hudLayer");
+        const domHudScore = document.getElementById("hudScore");
+        const domHudWpm = document.getElementById("hudWpm");
+        const domHudAcc = document.getElementById("hudAccuracy");
+        const domHudShieldPct = document.getElementById("hudShieldPercent");
+        const domHudShieldFill = document.getElementById("hudShieldFill");
+        const domHudTimer = document.getElementById("hudSurvivalTimer");
+        const domHudThreat = document.getElementById("hudThreatBadge");
+        const domHudCombo = document.getElementById("hudComboBadge");
+        const domDangerAlert = document.getElementById("dangerAlert");
+        const domVirtualKb = document.getElementById("virtualKeyboard");
+        const domEmpBtn = document.getElementById("btnTriggerEmp");
+        const domEmpLabel = document.getElementById("empReactorLabel");
+        const domEmpBar = document.getElementById("empProgressBar");
+
+        const THREAT_NAMES = ["RECON", "INVASION", "SIEGE", "APOCALYPSE", "OMEGA"];
+        let prevHud = { score: -1, wpm: -1, acc: -1, shield: -1, timer: "", threat: -1, combo: -1, danger: false };
 
         // ==========================================
-        // 4. CANVAS RENDERING SETUP
+        // 6. CANVAS SETUP & RESPONSIVE GEOMETRY
         // ==========================================
         const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { alpha: false });
+        let viewW = window.innerWidth;
+        let viewH = window.innerHeight;
 
         function resizeCanvas() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          viewW = window.innerWidth;
+          viewH = window.innerHeight;
+          canvas.width = Math.floor(viewW * dpr);
+          canvas.height = Math.floor(viewH * dpr);
+          canvas.style.width = `${viewW}px`;
+          canvas.style.height = `${viewH}px`;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
 
-        // Ambient Starfield
         const stars = [];
-        for (let i = 0; i < 110; i++) {
+        for (let i = 0; i < 75; i++) {
+          const layer = Math.random() < 0.35 ? 2 : 1;
           stars.push({
             x: Math.random(),
             y: Math.random(),
-            size: Math.random() * 2 + 0.5,
-            speed: Math.random() * 0.0006 + 0.0002,
-            alpha: Math.random() * 0.7 + 0.3
+            size: layer === 2 ? 1.8 : 1.0,
+            speed: layer === 2 ? 0.00055 : 0.00022,
+            alpha: layer === 2 ? 0.72 : 0.32
           });
         }
 
+        function getPlayfieldMetrics() {
+          const kbVisible = domVirtualKb && !domVirtualKb.classList.contains("hidden");
+          const kbHeight = kbVisible ? (domVirtualKb.offsetHeight || 162) : 0;
+          const turretY = Math.max(viewH * 0.45, viewH - kbHeight - 36);
+          const barrierY = turretY - 26;
+          return { turretX: viewW / 2, turretY, barrierY, kbHeight };
+        }
+
+        function applyDeviceKeyboardDefault() {
+          const isTouchOrSmall = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 900;
+          if (isTouchOrSmall) domVirtualKb.classList.remove("hidden");
+          else domVirtualKb.classList.add("hidden");
+        }
+        applyDeviceKeyboardDefault();
+
         // ==========================================
-        // 5. WORD GENERATION & SPAWNER
+        // 7. RANDOM COLLISION-FREE TARGET SPAWNER
         // ==========================================
+        function pickRandomWord(pool, avoidLetters) {
+          for (let attempt = 0; attempt < 18; attempt++) {
+            let w = pool[Math.floor(Math.random() * pool.length)];
+            if (Math.random() < 0.14 && gameMode !== "home-row") {
+              w = generateProceduralCyberWord();
+            }
+            if (!avoidLetters.has(w[0].toLowerCase())) return w;
+          }
+          return pool[Math.floor(Math.random() * pool.length)];
+        }
+
         function getNextWord() {
-          let list = WORDS_ARCADE;
-          if (gameMode === "code") list = WORDS_CODE;
-          if (gameMode === "home-row") list = WORDS_HOME_ROW;
-
-          const word = list[Math.floor(Math.random() * list.length)].toLowerCase();
-
-          // Target kinds: normal, scout, heavy, emp, heal, freeze
-          const rand = Math.random();
+          let pool = WORDS_ARCADE_SHORT;
           let kind = "normal";
-          let points = word.length * 10;
-          let glowColor = "#00f0ff";
+          let points = 100;
+          let glow = "#22d3ee";
+          const rnd = Math.random();
 
-          if (rand < 0.06) {
-            kind = "emp";
-            glowColor = "#ffd000";
-            points += 50;
-          } else if (rand < 0.12) {
-            kind = "heal";
-            glowColor = "#00ff88";
-            points += 30;
-          } else if (rand < 0.17) {
-            kind = "freeze";
-            glowColor = "#38bdf8";
-            points += 30;
-          } else if (rand < 0.4) {
-            kind = "scout";
-            glowColor = "#00f0ff";
-            points = Math.round(points * 1.3);
-          } else if (rand < 0.6 && wave >= 2) {
-            kind = "heavy";
-            glowColor = "#ff007f";
-            points = Math.round(points * 2.2);
+          if (gameMode === "arcade") {
+            if (threatLevel >= 3 && rnd < 0.22) {
+              pool = WORDS_ARCADE_LONG; kind = "dreadnought"; points = 350; glow = "#a78bfa";
+            } else if (rnd < 0.26) {
+              pool = WORDS_CLUSTERS; kind = "cluster"; points = 220; glow = "#fb923c";
+            } else if (rnd < 0.34) {
+              pool = ["repair", "nanite", "patch", "heal", "shield", "mend"]; kind = "heal"; points = 180; glow = "#10b981";
+            } else {
+              pool = threatLevel >= 2 ? WORDS_ARCADE_MED : WORDS_ARCADE_SHORT;
+              points = 120; glow = "#22d3ee";
+            }
+          } else if (gameMode === "time-attack") {
+            if (rnd < 0.34) {
+              pool = WORDS_CHRONO; kind = "chrono"; points = 200; glow = "#fbbf24";
+            } else if (rnd < 0.56) {
+              pool = WORDS_DRAIN; kind = "drain"; points = 150; glow = "#f43f5e";
+            } else {
+              pool = WORDS_ARCADE_SHORT; points = 100; glow = "#38bdf8";
+            }
+          } else if (gameMode === "code") {
+            if (rnd < 0.28) {
+              pool = WORDS_FIREWALL; kind = "firewall"; points = 280; glow = "#f43f5e";
+            } else if (rnd < 0.54) {
+              pool = WORDS_WORM; kind = "worm"; points = 200; glow = "#34d399";
+            } else {
+              pool = WORDS_CODE; points = 150; glow = "#22d3ee";
+            }
+          } else if (gameMode === "home-row") {
+            if (rnd < 0.45) {
+              pool = [
+                generateRandomHomeRowWord(3 + Math.floor(threatLevel * 0.7)),
+                generateRandomHomeRowWord(4 + Math.floor(threatLevel * 0.7)),
+                generateRandomHomeRowWord(4 + Math.floor(threatLevel * 0.6))
+              ];
+            } else {
+              pool = WORDS_HOME_ROW_BASE;
+            }
+            kind = Math.random() < 0.38 ? "phantom" : "tactile";
+            points = 120;
+            glow = "#10b981";
           }
 
-          let speed = 2.4 + wave * 0.38;
-          if (kind === "scout") speed *= 1.4;
-          if (kind === "heavy") speed *= 0.65;
-          if (gameMode === "home-row") speed *= 0.8;
+          const usedFirstLetters = new Set(targets.map(t => t.word[0].toLowerCase()));
+          const word = pickRandomWord(pool, usedFirstLetters);
 
-          // Avoid horizontal overlap
-          let x = 12 + Math.random() * 76;
-          if (targets.length > 0) {
-            const lastX = targets[targets.length - 1].x;
-            if (Math.abs(lastX - x) < 14) x = (x + 35) % 80 + 10;
+          const isSideHud = viewW >= 901;
+          let spawnYPct;
+          let minSpawnX = 14;
+          let maxSpawnX = 86;
+
+          if (isSideHud) {
+            spawnYPct = Math.min(14, Math.max(8, (54 / Math.max(viewH, 320)) * 100));
+            const sideMarginPct = Math.min(28, Math.max(16, (220 / viewW) * 100));
+            minSpawnX = sideMarginPct;
+            maxSpawnX = 100 - sideMarginPct;
+          } else {
+            const hudHeightPx = (domHudLayer && domHudLayer.offsetHeight) ? domHudLayer.offsetHeight : 82;
+            const safeSpawnYPx = hudHeightPx + 42;
+            spawnYPct = Math.min(34, Math.max(12, (safeSpawnYPx / Math.max(viewH, 320)) * 100));
           }
+
+          const spanX = Math.max(20, maxSpawnX - minSpawnX);
+          let spawnX = minSpawnX + Math.random() * spanX;
+          for (let tries = 0; tries < 8; tries++) {
+            const candidate = minSpawnX + Math.random() * spanX;
+            const tooClose = targets.some(t => t.y < spawnYPct + 16 && Math.abs(t.x - candidate) < 18);
+            if (!tooClose) {
+              spawnX = candidate;
+              break;
+            }
+          }
+
+          const speedMultiplier = 1 + (threatLevel - 1) * 0.22;
+          const baseSpeed = (2.3 + Math.random() * 1.4) * speedMultiplier;
 
           return {
-            id: "tgt-" + Date.now() + "-" + Math.random(),
+            id: "t-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
             word,
             typedIndex: 0,
-            x,
-            y: 8,
-            speed,
+            x: spawnX,
+            y: spawnYPct,
+            speed: baseSpeed,
             kind,
             points,
-            glowColor
+            glowColor: glow,
+            firewallTimer: kind === "firewall" ? 9 : undefined,
+            maxFirewallTimer: kind === "firewall" ? 9 : undefined,
+            baseX: spawnX,
+            phase: Math.random() * Math.PI * 2,
+            spawnTime: performance.now(),
+            hitFlash: 0
           };
         }
 
@@ -1072,163 +1870,106 @@
         }
 
         // ==========================================
-        // 6. PARTICLES & LASERS
+        // 8. EMP SUPERWEAPON (STRICTLY AT 100% ONLY!)
         // ==========================================
-        function spawnParticles(x, y, color, count = 22) {
-          for (let i = 0; i < count; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 5 + 1.5;
-            particles.push({
-              x,
-              y,
-              vx: Math.cos(angle) * speed,
-              vy: Math.sin(angle) * speed,
-              life: 1,
-              maxLife: Math.random() * 0.4 + 0.3,
-              color,
-              size: Math.random() * 3.5 + 1.5
+        function attemptTriggerEMP() {
+          if (empCharge < 100) {
+            sound.playError();
+            if (navigator.vibrate) try { navigator.vibrate([25, 35, 25]); } catch(_) {}
+            if (domEmpBtn) {
+              domEmpBtn.style.transform = "translateX(4px)";
+              setTimeout(() => { domEmpBtn.style.transform = "translateX(-4px)"; }, 55);
+              setTimeout(() => { domEmpBtn.style.transform = "translateX(0)"; }, 110);
+            }
+            floatingTexts.push({
+              text: `EMP REQUIRES 100% (${Math.round(empCharge)}%)`,
+              x: viewW / 2,
+              y: viewH * 0.48,
+              color: "#f43f5e",
+              alpha: 1
             });
+            return false;
           }
-        }
 
-        function triggerEMP() {
           sound.playEMP();
-          empShockwaveRadius = 10;
+          if (navigator.vibrate) try { navigator.vibrate([80, 40, 150]); } catch(_) {}
+          empShockwaveRadius = 12;
           empCharge = 0;
           shake = 1.8;
 
           let addedScore = 0;
-          const destroyed = targets.length;
           targets.forEach(t => {
             addedScore += t.points * combo;
-            spawnParticles((t.x / 100) * canvas.width, (t.y / 100) * canvas.height, t.glowColor, 20);
+            const tx = (t.x / 100) * viewW;
+            const ty = (t.y / 100) * viewH;
+            spawnParticles(tx, ty, t.glowColor, 16, true);
+            shockwaves.push({ x: tx, y: ty, r: 8, maxR: 52, color: t.glowColor, alpha: 0.9 });
           });
 
           score += addedScore;
-          wordsDestroyed += destroyed;
           targets = [];
           activeTargetId = null;
 
           floatingTexts.push({
-            text: `⚡ EMP BLAST! +${addedScore}`,
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            color: "#ffd000",
-            alpha: 1,
-            scale: 1.5
+            text: `EMP SHOCKWAVE +${addedScore}`,
+            x: viewW / 2,
+            y: viewH * 0.42,
+            color: "#fbbf24",
+            alpha: 1
           });
 
           updateVirtualKeyboardTargetHighlight();
+          updateEMPButtonState();
+          return true;
         }
 
-        // ==========================================
-        // 7. KEYBOARD HIGHLIGHTING & TOUCH TYPING
-        // ==========================================
-        function updateVirtualKeyboardTargetHighlight() {
-          // Remove previous target highlight
-          document.querySelectorAll(".kb-key.target-active").forEach(el => el.classList.remove("target-active"));
-
-          const activeTarget = targets.find(t => t.id === activeTargetId);
-          let nextChar = "";
-          if (activeTarget) {
-            nextChar = activeTarget.word[activeTarget.typedIndex];
-          } else if (targets.length > 0) {
-            // Highlight first letter of nearest target
-            const sorted = [...targets].sort((a, b) => b.y - a.y);
-            nextChar = sorted[0].word[0];
-          }
-
-          if (nextChar) {
-            const keyEl = document.querySelector(`.kb-key[data-key="${nextChar.toLowerCase()}"]`);
-            if (keyEl) keyEl.classList.add("target-active");
-          }
-        }
-
-        function flashVirtualKey(char) {
-          const keyEl = document.querySelector(`.kb-key[data-key="${char.toLowerCase()}"]`);
-          if (keyEl) {
-            keyEl.classList.add("pressed");
-            setTimeout(() => keyEl.classList.remove("pressed"), 120);
+        function updateEMPButtonState() {
+          if (!domEmpBtn || !domEmpLabel || !domEmpBar) return;
+          const pct = Math.round(empCharge);
+          domEmpBar.style.width = `${pct}%`;
+          if (pct >= 100) {
+            domEmpBtn.classList.add("ready");
+            domEmpLabel.textContent = "EMP READY";
+          } else {
+            domEmpBtn.classList.remove("ready");
+            domEmpLabel.textContent = `EMP ${pct}%`;
           }
         }
 
         // ==========================================
-        // 8. CRITICAL FIX: KEYBOARD INPUT HANDLER
+        // 9. INPUT HANDLER & KEYBOARD ENGINE
         // ==========================================
-        window.addEventListener("keydown", (e) => {
-          // Handle Pause / Esc
-          if (e.key === "Escape") {
-            if (gameState === "playing") {
-              pauseGame();
-            } else if (gameState === "paused") {
-              resumeGame();
-            }
-            return;
-          }
-
-          // Handle Enter / Space in menus
-          if (gameState === "title") {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              startGame(gameMode);
-            }
-            return;
-          }
-
-          if (gameState === "gameover") {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              startGame(gameMode);
-            }
-            return;
-          }
-
+        function handleKeyInput(rawKey) {
           if (gameState !== "playing") return;
 
-          // Tab toggles virtual keyboard without typing
-          if (e.key === "Tab") {
-            e.preventDefault();
-            toggleVirtualKeyboard();
+          if (rawKey === " " || rawKey === "Enter") {
+            attemptTriggerEMP();
             return;
           }
 
-          // Space or Enter triggers EMP if charged to 100%
-          if ((e.key === " " || e.key === "Enter") && empCharge >= 100) {
-            e.preventDefault();
-            triggerEMP();
+          if (rawKey === "Backspace") {
+            activeTargetId = null;
+            updateVirtualKeyboardTargetHighlight();
             return;
           }
 
-          // ONLY ACCEPT TYPING KEYS (letters, digits, symbols)
-          // Notice: 'm' and 'M' are FULLY allowed here and NEVER intercepted by shortcuts!
-          const rawChar = e.key;
-          if (rawChar.length !== 1) return; // ignore Shift, Ctrl, Alt, etc.
+          if (rawKey.length !== 1) return;
+          const char = rawKey.toLowerCase();
 
-          const char = rawChar.toLowerCase();
-
-          // Flash on-screen mechanical key
+          sound.playKeyClick();
           flashVirtualKey(char);
+          if (navigator.vibrate) try { navigator.vibrate(10); } catch(_) {}
 
-          // Play mechanical sound
-          sound.playKeyClick(char);
-
-          const width = canvas.width;
-          const height = canvas.height;
-          const turretX = width / 2;
-          const turretY = height - 210;
-
+          const { turretX, turretY } = getPlayfieldMetrics();
           let activeTarget = targets.find(t => t.id === activeTargetId);
 
-          // If no target locked, lock onto candidate starting with this key
           if (!activeTarget) {
             const candidates = targets.filter(t => t.word[0].toLowerCase() === char);
             if (candidates.length > 0) {
-              // Lock onto the one closest to bottom
               candidates.sort((a, b) => b.y - a.y);
               activeTarget = candidates[0];
               activeTargetId = activeTarget.id;
             } else {
-              // Mis-strike
               sound.playError();
               totalErrors++;
               combo = 1;
@@ -1238,80 +1979,83 @@
             }
           }
 
-          // Verify expected character
           const expectedChar = activeTarget.word[activeTarget.typedIndex]?.toLowerCase();
 
           if (char === expectedChar) {
-            // Hit!
             totalCorrectKeystrokes++;
             activeTarget.typedIndex++;
+            activeTarget.hitFlash = 1;
+            activeTarget.y = Math.max(10, activeTarget.y - 0.85);
+            lastTurretRecoil = 1;
+            muzzleFlashAlpha = 1;
 
-            const targetX = (activeTarget.x / 100) * width;
-            const targetY = (activeTarget.y / 100) * height;
+            const targetX = (activeTarget.x / 100) * viewW;
+            const targetY = (activeTarget.y / 100) * viewH;
 
-            // Plasma Laser Beam
             lasers.push({
               startX: turretX,
               startY: turretY,
               targetX,
               targetY,
               progress: 0,
-              color: combo >= 20 ? "#ffd000" : "#00f0ff"
+              color: combo >= 15 ? "#fbbf24" : "#22d3ee"
             });
-            sound.playLaser();
+            sound.playLaser(combo);
+            spawnParticles(targetX, targetY - 12, "#ffffff", 4);
 
-            // Increase Combo
             combo++;
             if (combo > maxCombo) maxCombo = combo;
 
-            // Check if Word is Complete
             if (activeTarget.typedIndex >= activeTarget.word.length) {
-              const earned = activeTarget.points * combo;
+              let earned = Math.round(activeTarget.points * combo);
+              if (gameMode === "time-attack" && timeLeft <= 15) earned = Math.round(earned * 2.5);
               score += earned;
-              wordsDestroyed++;
 
               sound.playExplosion(combo);
-              spawnParticles(targetX, targetY, activeTarget.glowColor, 28);
-              shake = Math.min(shake + 0.6, 1.5);
+              spawnParticles(targetX, targetY - 12, activeTarget.glowColor, 20, true);
+              shockwaves.push({ x: targetX, y: targetY - 12, r: 6, maxR: 48, color: activeTarget.glowColor, alpha: 0.9 });
+              shake = Math.min(shake + 0.5, 1.3);
 
-              // Charge EMP
-              empCharge = Math.min(100, empCharge + 12);
+              empCharge = Math.min(100, empCharge + 15);
+              updateEMPButtonState();
 
-              // Special Pod Effects
               if (activeTarget.kind === "heal") {
                 sound.playPowerup();
                 hullHealth = Math.min(100, hullHealth + 25);
-                floatingTexts.push({ text: "💖 +25% SHIELD REPAIRED", x: targetX, y: targetY - 20, color: "#00ff88", alpha: 1, scale: 1.2 });
-              } else if (activeTarget.kind === "freeze") {
+                floatingTexts.push({ text: "+25% REPAIR", x: targetX, y: targetY - 24, color: "#10b981", alpha: 1 });
+              } else if (activeTarget.kind === "chrono") {
                 sound.playPowerup();
-                freezeTimer = 6;
-                floatingTexts.push({ text: "❄️ TIME FREEZE 6s", x: targetX, y: targetY - 20, color: "#38bdf8", alpha: 1, scale: 1.2 });
-              } else if (activeTarget.kind === "emp") {
-                triggerEMP();
+                timeLeft = Math.min(60, timeLeft + 4);
+                floatingTexts.push({ text: "+4s CHRONO", x: targetX, y: targetY - 24, color: "#fbbf24", alpha: 1 });
+              } else if (activeTarget.kind === "cluster") {
+                sound.playPowerup();
+                floatingTexts.push({ text: "SPLIT!", x: targetX, y: targetY - 24, color: "#fb923c", alpha: 1 });
+                const used = new Set(targets.map(t => t.word[0].toLowerCase()));
+                for (let s = 0; s < 2; s++) {
+                  const shardWord = pickRandomWord(WORDS_SHARDS, used);
+                  used.add(shardWord[0].toLowerCase());
+                  targets.push({
+                    id: "shard-" + Date.now() + "-" + s,
+                    word: shardWord,
+                    typedIndex: 0,
+                    x: Math.max(12, Math.min(88, activeTarget.x + (s === 0 ? -12 : 12))),
+                    y: activeTarget.y + 3,
+                    speed: activeTarget.speed * 1.35,
+                    kind: "shard",
+                    points: 150,
+                    glowColor: "#fb923c",
+                    hitFlash: 0
+                  });
+                }
               }
 
               floatingTexts.push({
                 text: `+${earned}`,
                 x: targetX,
-                y: targetY,
+                y: targetY - 6,
                 color: activeTarget.glowColor,
-                alpha: 1,
-                scale: combo > 10 ? 1.4 : 1
+                alpha: 1
               });
-
-              // Wave Clear Check
-              if (wordsDestroyed % 10 === 0) {
-                wave++;
-                sound.playPowerup();
-                floatingTexts.push({
-                  text: `⚔️ WAVE ${wave} INCOMING!`,
-                  x: width / 2,
-                  y: height * 0.35,
-                  color: "#8b5cf6",
-                  alpha: 1,
-                  scale: 1.6
-                });
-              }
 
               targets = targets.filter(t => t.id !== activeTarget.id);
               activeTargetId = null;
@@ -1319,17 +2063,139 @@
 
             updateVirtualKeyboardTargetHighlight();
           } else {
-            // Wrong letter on locked word
             sound.playError();
             totalErrors++;
             combo = 1;
-            shake = 0.4;
+            shake = 0.35;
             errorKeyCounts[char] = (errorKeyCounts[char] || 0) + 1;
+          }
+        }
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            if (gameState === "playing") pauseGame();
+            else if (gameState === "paused") resumeGame();
+            return;
+          }
+
+          if (gameState === "enlist" || gameState === "gameover" || gameState === "title") {
+            if (document.activeElement && document.activeElement.tagName === "INPUT") return;
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              if (gameState === "title" || gameState === "gameover") startGame(gameMode);
+            }
+            return;
+          }
+
+          if (gameState === "playing") {
+            if (e.key === " ") e.preventDefault();
+            handleKeyInput(e.key);
           }
         });
 
+        let lastTouchTime = 0;
+        function triggerKey(keyVal, e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          const now = performance.now();
+          if (now - lastTouchTime < 35) return;
+          lastTouchTime = now;
+          if (gameState === "playing") handleKeyInput(keyVal);
+        }
+
+        document.querySelectorAll(".kb-key").forEach(keyEl => {
+          const keyVal = keyEl.getAttribute("data-key");
+          if (!keyVal) return;
+          keyEl.addEventListener("touchstart", (e) => triggerKey(keyVal, e), { passive: false });
+          keyEl.addEventListener("pointerdown", (e) => triggerKey(keyVal, e));
+        });
+
+        canvas.addEventListener("pointerdown", (e) => {
+          if (gameState !== "playing") return;
+          const rect = canvas.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const clickY = e.clientY - rect.top;
+          for (const t of targets) {
+            const tx = (t.x / 100) * viewW;
+            const ty = (t.y / 100) * viewH;
+            if (Math.hypot(clickX - tx, clickY - ty) < 48) {
+              activeTargetId = t.id;
+              sound.playLaser(combo);
+              updateVirtualKeyboardTargetHighlight();
+              break;
+            }
+          }
+        });
+
+        const mobileKeySink = document.getElementById("mobileKeySink");
+        const btnFocusMobile = document.getElementById("btnFocusMobileInput");
+        if (btnFocusMobile && mobileKeySink) {
+          btnFocusMobile.addEventListener("click", () => mobileKeySink.focus());
+          mobileKeySink.addEventListener("input", (e) => {
+            if (e.data && gameState === "playing") handleKeyInput(e.data);
+            mobileKeySink.value = "";
+          });
+        }
+
+        function flashVirtualKey(char) {
+          const keyEl = document.querySelector(`.kb-key[data-key="${char.toLowerCase()}"]`);
+          if (keyEl) {
+            keyEl.classList.add("pressed");
+            setTimeout(() => keyEl.classList.remove("pressed"), 90);
+          }
+        }
+
+        function updateVirtualKeyboardTargetHighlight() {
+          document.querySelectorAll(".kb-key.target-active").forEach(el => el.classList.remove("target-active"));
+
+          const activeTarget = targets.find(t => t.id === activeTargetId);
+          const targetPreview = document.getElementById("hudTargetPreview");
+          let nextChar = "";
+
+          if (activeTarget) {
+            nextChar = activeTarget.word[activeTarget.typedIndex];
+            if (targetPreview) {
+              const typed = activeTarget.word.slice(0, activeTarget.typedIndex);
+              const cur = activeTarget.word[activeTarget.typedIndex] || "";
+              const remain = activeTarget.word.slice(activeTarget.typedIndex + 1);
+              targetPreview.innerHTML = `<span style="color:#fbbf24;">${typed}</span><span style="color:#ffffff;text-decoration:underline;text-decoration-color:#22d3ee;">${cur}</span><span style="color:#94a3b8;">${remain}</span>`;
+            }
+          } else if (targets.length > 0) {
+            const sorted = [...targets].sort((a, b) => b.y - a.y);
+            nextChar = sorted[0].word[0];
+            if (targetPreview) {
+              targetPreview.innerHTML = `<span style="color:#38bdf8;">${sorted[0].word}</span>`;
+            }
+          } else if (targetPreview) {
+            targetPreview.innerHTML = `<span style="color:#64748b;font-style:italic;font-size:10px;">Scanning...</span>`;
+          }
+
+          if (nextChar) {
+            const keyEl = document.querySelector(`.kb-key[data-key="${nextChar.toLowerCase()}"]`);
+            if (keyEl) keyEl.classList.add("target-active");
+
+            const coach = getFingerForChar(nextChar);
+            const coachEl = document.getElementById("hudFingerCoach");
+            const coachNameEl = document.getElementById("hudFingerName");
+            if (coach && coachEl && coachNameEl) {
+              coachEl.style.display = "inline";
+              coachNameEl.textContent = `${coach.name} · ${nextChar.toUpperCase()}`;
+              coachNameEl.style.color = coach.color;
+            }
+          } else {
+            const coachEl = document.getElementById("hudFingerCoach");
+            if (coachEl) coachEl.style.display = "none";
+          }
+        }
+
+        function toggleVirtualKeyboard() {
+          if (domVirtualKb) domVirtualKb.classList.toggle("hidden");
+        }
+
         // ==========================================
-        // 9. 60FPS SIMULATION GAME LOOP
+        // 10. 60FPS ZERO-LAG SIMULATION LOOP
         // ==========================================
         let lastTimestamp = performance.now();
 
@@ -1338,70 +2204,108 @@
           const dt = Math.min(rawDt, 0.05);
           lastTimestamp = now;
 
-          if (gameState === "playing") {
-            updateSimulation(dt, now);
-          }
+          if (gameState === "playing") updateSimulation(dt, now);
 
-          renderCanvas();
+          renderCanvas(now);
           requestAnimationFrame(gameLoop);
         }
 
         function updateSimulation(dt, now) {
-          // 1. Live WPM & Accuracy calculation
-          const elapsedMin = (now - gameStartTime) / 60000;
+          survivalSeconds = (now - gameStartTime) / 1000;
+          const newThreat = Math.min(5, 1 + Math.floor(survivalSeconds / 22));
+          if (newThreat > threatLevel) {
+            threatLevel = newThreat;
+            sound.playThreatSiren();
+            shake = 1.2;
+            floatingTexts.push({
+              text: `THREAT LVL ${threatLevel} · ${THREAT_NAMES[threatLevel - 1]}`,
+              x: viewW / 2,
+              y: viewH * 0.28,
+              color: threatLevel >= 4 ? "#f43f5e" : "#fbbf24",
+              alpha: 1
+            });
+          }
+
+          const elapsedMin = survivalSeconds / 60;
           if (elapsedMin > 0.02) {
             wpm = Math.max(0, Math.round((totalCorrectKeystrokes / 5) / elapsedMin));
             const totalKeys = totalCorrectKeystrokes + totalErrors;
             accuracy = totalKeys > 0 ? Math.round((totalCorrectKeystrokes / totalKeys) * 100) : 100;
           }
 
-          // 2. Time-Attack countdown
           if (gameMode === "time-attack") {
-            timeLeft = Math.max(0, 60 - Math.floor((now - gameStartTime) / 1000));
+            timeLeft = Math.max(0, timeLeft - dt);
             if (timeLeft <= 0) {
               endGame(true);
               return;
             }
           }
 
-          // 3. Freeze timer
-          if (freezeTimer > 0) freezeTimer -= dt;
-
-          // 4. EMP shockwave
           if (empShockwaveRadius > 0) {
-            empShockwaveRadius += dt * 1400;
-            if (empShockwaveRadius > Math.max(canvas.width, canvas.height)) {
-              empShockwaveRadius = 0;
-            }
+            empShockwaveRadius += dt * 1500;
+            if (empShockwaveRadius > Math.max(viewW, viewH)) empShockwaveRadius = 0;
           }
 
-          // 5. Screen shake decay
           if (shake > 0.02) shake *= 0.88;
           else shake = 0;
 
-          // 6. Spawn cadence
-          const spawnInterval = Math.max(1200, 3200 - wave * 220);
-          if (now - lastSpawnTime > spawnInterval && targets.length < 3 + wave) {
+          if (lastTurretRecoil > 0.02) lastTurretRecoil *= 0.82;
+          else lastTurretRecoil = 0;
+
+          if (muzzleFlashAlpha > 0.02) muzzleFlashAlpha *= 0.72;
+          else muzzleFlashAlpha = 0;
+
+          const spawnInterval = Math.max(950, 2550 - threatLevel * 300);
+          if (now - lastSpawnTime > spawnInterval && targets.length < 3 + threatLevel) {
             spawnTarget();
             lastSpawnTime = now;
           }
 
-          // 7. Move targets down
-          const speedFactor = freezeTimer > 0 ? 0.35 : 1;
+          const { barrierY } = getPlayfieldMetrics();
+          const barrierPct = (barrierY / viewH) * 100;
           const remaining = [];
+
           for (let i = 0; i < targets.length; i++) {
             const t = targets[i];
-            t.y += t.speed * dt * speedFactor;
+            t.y += t.speed * dt;
+            if (t.hitFlash > 0) t.hitFlash = Math.max(0, t.hitFlash - dt * 6);
 
-            // Shield breach barrier (calculated above the visible missile launcher)
-            const barrierPct = Math.max(50, ((canvas.height - 240) / canvas.height) * 100);
+            if (t.kind === "worm" && t.baseX !== undefined) {
+              const wormMinX = viewW >= 901 ? Math.min(26, (210 / viewW) * 100) : 10;
+              t.x = Math.max(wormMinX, Math.min(100 - wormMinX, t.baseX + Math.sin(now * 0.005 + (t.phase || 0)) * 13));
+            }
+
+            if (t.kind === "firewall" && t.firewallTimer !== undefined) {
+              t.firewallTimer -= dt;
+              if (t.firewallTimer <= 0) {
+                sound.playError();
+                hullHealth = Math.max(0, hullHealth - 18);
+                shake = 1.4;
+                const fx = (t.x / 100) * viewW;
+                const fy = (t.y / 100) * viewH;
+                spawnParticles(fx, fy, "#f43f5e", 16);
+                shockwaves.push({ x: fx, y: fy, r: 8, maxR: 54, color: "#f43f5e", alpha: 0.9 });
+                floatingTexts.push({ text: "ICE BREACH -18%", x: fx, y: fy, color: "#f43f5e", alpha: 1 });
+                if (activeTargetId === t.id) activeTargetId = null;
+                continue;
+              }
+            }
+
             if (t.y >= barrierPct) {
-              const dmg = t.kind === "heavy" ? 22 : 12;
+              let dmg = 12;
+              if (t.kind === "dreadnought") dmg = 24;
+              if (t.kind === "cluster") dmg = 20;
+              if (t.kind === "drain") {
+                timeLeft = Math.max(0, timeLeft - 2.5);
+                floatingTexts.push({ text: "-2.5s DRAIN", x: (t.x / 100) * viewW, y: barrierY, color: "#f43f5e", alpha: 1 });
+              }
+
               hullHealth = Math.max(0, hullHealth - dmg);
               sound.playDamage();
-              shake = 1.6;
-              spawnParticles((t.x / 100) * canvas.width, (t.y / 100) * canvas.height, "#ef4444", 25);
-
+              shake = 1.4;
+              const bx = (t.x / 100) * viewW;
+              spawnParticles(bx, barrierY, "#f43f5e", 16);
+              shockwaves.push({ x: bx, y: barrierY, r: 6, maxR: 46, color: "#f43f5e", alpha: 0.85 });
               if (activeTargetId === t.id) activeTargetId = null;
             } else {
               remaining.push(t);
@@ -1409,365 +2313,497 @@
           }
           targets = remaining;
 
-          // Low shield warning flash
-          const dangerAlert = document.getElementById("dangerAlert");
-          if (hullHealth <= 30 && hullHealth > 0) {
-            dangerAlert.classList.add("active");
-          } else {
-            dangerAlert.classList.remove("active");
+          const isDanger = hullHealth <= 30 && hullHealth > 0;
+          if (isDanger !== prevHud.danger) {
+            prevHud.danger = isDanger;
+            if (isDanger) domDangerAlert.classList.add("active");
+            else domDangerAlert.classList.remove("active");
           }
 
-          // Base compromised check
           if (hullHealth <= 0) {
             endGame(false);
             return;
           }
 
-          // 8. Lasers progression
-          const activeLasers = [];
-          for (const l of lasers) {
-            l.progress += dt * 8;
-            if (l.progress < 1) activeLasers.push(l);
-          }
-          lasers = activeLasers;
-
-          // 9. Particles
-          const activeParticles = [];
-          for (const p of particles) {
-            p.x += p.vx;
-            p.y += p.vy;
+          const step = Math.min(dt * 60, 2.5);
+          lasers = lasers.filter(l => { l.progress += dt * 9.5; return l.progress < 1; });
+          const nextParticles = [];
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
             p.life -= dt;
-            if (p.life > 0) activeParticles.push(p);
+            if (p.life <= 0) continue;
+            if (p.trail) {
+              p.trail.push({ x: p.x, y: p.y });
+              if (p.trail.length > p.maxTrail) p.trail.shift();
+            }
+            if (p.swirl) {
+              const sw = p.swirl * step;
+              const cos = Math.cos(sw);
+              const sin = Math.sin(sw);
+              const nvx = p.vx * cos - p.vy * sin;
+              const nvy = p.vx * sin + p.vy * cos;
+              p.vx = nvx;
+              p.vy = nvy;
+            }
+            if (p.drag) {
+              const df = Math.pow(p.drag, step);
+              p.vx *= df;
+              p.vy *= df;
+            }
+            if (p.gravity) p.vy += p.gravity * step;
+            p.x += p.vx * step;
+            p.y += p.vy * step;
+            nextParticles.push(p);
           }
-          particles = activeParticles;
+          particles = nextParticles;
+          if (particles.length > 200) particles.splice(0, particles.length - 200);
+          shockwaves = shockwaves.filter(s => { s.r += dt * 180; s.alpha -= dt * 2.4; return s.alpha > 0; });
+          floatingTexts = floatingTexts.filter(ft => { ft.y -= dt * 34; ft.alpha -= dt * 0.9; return ft.alpha > 0; });
 
-          // 10. Floating text
-          const activeTexts = [];
-          for (const ft of floatingTexts) {
-            ft.y -= dt * 35;
-            ft.alpha -= dt * 0.9;
-            if (ft.alpha > 0) activeTexts.push(ft);
+          if (score !== prevHud.score) { prevHud.score = score; domHudScore.textContent = score.toLocaleString(); }
+          if (wpm !== prevHud.wpm) { prevHud.wpm = wpm; domHudWpm.textContent = wpm; }
+          if (accuracy !== prevHud.acc) { prevHud.acc = accuracy; domHudAcc.textContent = accuracy; }
+
+          const roundedShield = Math.round(hullHealth);
+          if (roundedShield !== prevHud.shield) {
+            prevHud.shield = roundedShield;
+            domHudShieldPct.textContent = `${roundedShield}%`;
+            domHudShieldFill.style.width = `${roundedShield}%`;
+            domHudShieldFill.style.background = roundedShield <= 30
+              ? "linear-gradient(90deg, #f43f5e, #fb7185)"
+              : "linear-gradient(90deg, #22d3ee, #6366f1)";
           }
-          floatingTexts = activeTexts;
 
-          // 11. Update HUD Elements
-          updateHUD();
+          const mins = Math.floor(survivalSeconds / 60);
+          const secs = Math.floor(survivalSeconds % 60);
+          const timerStr = gameMode === "time-attack"
+            ? `${Math.floor(timeLeft / 60)}:${String(Math.floor(timeLeft % 60)).padStart(2, "0")}`
+            : `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+          if (timerStr !== prevHud.timer) { prevHud.timer = timerStr; domHudTimer.textContent = timerStr; }
+
+          if (threatLevel !== prevHud.threat) {
+            prevHud.threat = threatLevel;
+            domHudThreat.textContent = `LVL ${threatLevel} · ${THREAT_NAMES[threatLevel - 1]}`;
+            domHudThreat.style.color = threatLevel >= 4 ? "#f43f5e" : threatLevel >= 3 ? "#fbbf24" : "#22d3ee";
+          }
+
+          if (combo !== prevHud.combo) {
+            prevHud.combo = combo;
+            if (combo > 1) {
+              domHudCombo.style.display = "inline";
+              domHudCombo.textContent = `${combo}x`;
+            } else {
+              domHudCombo.style.display = "none";
+            }
+          }
         }
 
-        function updateHUD() {
-          document.getElementById("hudShieldPercent").textContent = `${Math.round(hullHealth)}%`;
-          document.getElementById("hudShieldFill").style.width = `${Math.max(0, hullHealth)}%`;
-          document.getElementById("hudWpm").textContent = wpm;
-          document.getElementById("hudAccuracy").textContent = accuracy;
-          document.getElementById("hudScore").textContent = score.toLocaleString();
-          document.getElementById("hudWaveLabel").textContent = gameMode === "time-attack" ? `TIME: ${timeLeft}s` : `WAVE 0${wave}`;
-          document.getElementById("hudModeLabel").textContent = gameMode;
+        const STORM_ACCENT_COLORS = ["#f43f5e", "#a855f7", "#e11d48", "#38bdf8"];
 
-          // Combo
-          const comboBadge = document.getElementById("hudComboBadge");
-          if (combo > 1) {
-            comboBadge.style.display = "inline-block";
-            comboBadge.textContent = combo >= 20 ? `${combo}x OVERDRIVE! 🔥` : `${combo}x COMBO`;
-            if (combo >= 20) comboBadge.classList.add("overdrive-pulse");
-            else comboBadge.classList.remove("overdrive-pulse");
-          } else {
-            comboBadge.style.display = "none";
-          }
-
-          // EMP meter
-          document.getElementById("hudEmpFill").style.width = `${empCharge}%`;
-          const empLabel = document.getElementById("hudEmpLabel");
-          if (empCharge >= 100) {
-            empLabel.textContent = "EMP READY! [SPACE / ENTER]";
-            empLabel.className = "glow-gold overdrive-pulse";
-          } else {
-            empLabel.textContent = "EMP CHARGE";
-            empLabel.className = "glow-gold";
-          }
-
-          // Target lock preview
-          const targetPreview = document.getElementById("hudTargetPreview");
-          const activeTarget = targets.find(t => t.id === activeTargetId);
-          if (activeTarget) {
-            const typed = activeTarget.word.slice(0, activeTarget.typedIndex);
-            const remain = activeTarget.word.slice(activeTarget.typedIndex);
-            targetPreview.innerHTML = `<span style="color: #ffd000;">${typed}</span><span style="color: #ffffff; text-decoration: underline; text-decoration-color: #00f0ff;">${remain}</span>`;
-          } else {
-            targetPreview.innerHTML = `<span style="color: #64748b; font-style: italic; font-size: 12px;">Type any first letter...</span>`;
+        function spawnParticles(x, y, color, count, isDestroy = false) {
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = isDestroy ? (Math.random() * 6.5 + 2.0) : (Math.random() * 4.5 + 1.4);
+            const life = isDestroy ? (0.48 + Math.random() * 0.34) : 0.34;
+            const pColor = isDestroy && Math.random() < 0.42
+              ? STORM_ACCENT_COLORS[Math.floor(Math.random() * STORM_ACCENT_COLORS.length)]
+              : color;
+            particles.push({
+              x, y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              size: isDestroy ? (Math.random() * 2.2 + 1.5) : (Math.random() * 1.8 + 1.0),
+              color: pColor,
+              life,
+              maxLife: life,
+              trail: isDestroy ? [{ x, y }] : null,
+              maxTrail: isDestroy ? 7 : 0,
+              drag: isDestroy ? 0.935 : 0.96,
+              swirl: isDestroy ? ((Math.random() - 0.5) * 0.14) : 0,
+              gravity: isDestroy ? 0.045 : 0
+            });
           }
         }
 
         // ==========================================
-        // 10. CANVAS RENDERING
+        // 11. BESPOKE 60FPS SPACECRAFT & CANVAS RENDERER
         // ==========================================
-        function renderCanvas() {
-          const width = canvas.width;
-          const height = canvas.height;
+        function drawEnemyCraft(t, now) {
+          ctx.fillStyle = t.hitFlash > 0 ? "#ffffff" : t.glowColor;
+          ctx.strokeStyle = t.hitFlash > 0 ? "#ffffff" : "rgba(255,255,255,0.4)";
+          ctx.lineWidth = 1.2;
 
+          if (t.kind === "dreadnought") {
+            // Heavy Winged Cruiser
+            ctx.beginPath();
+            ctx.moveTo(0, -18);
+            ctx.lineTo(18, -32);
+            ctx.lineTo(12, -38);
+            ctx.lineTo(0, -34);
+            ctx.lineTo(-12, -38);
+            ctx.lineTo(-18, -32);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          } else if (t.kind === "cluster") {
+            // Spinning Asteroid Polygon
+            ctx.save();
+            ctx.translate(0, -28);
+            ctx.rotate(now * 0.002);
+            ctx.beginPath();
+            for (let p = 0; p < 6; p++) {
+              const ang = (p / 6) * Math.PI * 2;
+              const rad = p % 2 === 0 ? 10 : 7;
+              if (p === 0) ctx.moveTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+              else ctx.lineTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          } else if (t.kind === "chrono") {
+            // Diamond Crystal
+            ctx.beginPath();
+            ctx.moveTo(0, -20);
+            ctx.lineTo(9, -29);
+            ctx.lineTo(0, -38);
+            ctx.lineTo(-9, -29);
+            ctx.closePath();
+            ctx.fill();
+          } else if (t.kind === "heal") {
+            // Emerald Repair Drone Cross
+            ctx.fillRect(-3, -36, 6, 16);
+            ctx.fillRect(-8, -31, 16, 6);
+          } else if (t.kind === "firewall") {
+            // Hexagonal Security Node
+            ctx.beginPath();
+            for (let p = 0; p < 6; p++) {
+              const ang = (p / 6) * Math.PI * 2;
+              const px = Math.cos(ang) * 9;
+              const py = -29 + Math.sin(ang) * 9;
+              if (p === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+          } else if (t.kind === "worm") {
+            // Undulating Cyber Serpent Segments
+            for (let s = 0; s < 3; s++) {
+              const ox = Math.sin(now * 0.01 + s * 1.4) * 5;
+              ctx.beginPath();
+              ctx.arc(ox, -22 - s * 7, 4.5 - s * 0.8, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          } else {
+            // Sleek Interceptor Fighter
+            ctx.beginPath();
+            ctx.moveTo(0, -20);
+            ctx.lineTo(10, -34);
+            ctx.lineTo(0, -30);
+            ctx.lineTo(-10, -34);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        function renderCanvas(now) {
           ctx.save();
-
-          // Screen shake offset
-          if (shake > 0.05) {
-            ctx.translate((Math.random() - 0.5) * shake * 12, (Math.random() - 0.5) * shake * 12);
+          if (shake > 0.02) {
+            ctx.translate((Math.random() - 0.5) * shake * 10, (Math.random() - 0.5) * shake * 10);
           }
 
-          // Background Gradient
-          const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-          bgGrad.addColorStop(0, "#030712");
-          bgGrad.addColorStop(0.7, "#080d1a");
-          bgGrad.addColorStop(1, "#0d1326");
-          ctx.fillStyle = bgGrad;
-          ctx.fillRect(0, 0, width, height);
+          // Deep Orbital Space Backdrop
+          ctx.fillStyle = "#040814";
+          ctx.fillRect(0, 0, viewW, viewH);
 
-          // Starfield
-          stars.forEach(st => {
+          // Parallax Starfield
+          for (let i = 0; i < stars.length; i++) {
+            const st = stars[i];
             st.y += st.speed;
             if (st.y > 1) st.y = 0;
-            ctx.fillStyle = `rgba(180, 215, 255, ${st.alpha})`;
-            ctx.beginPath();
-            ctx.arc(st.x * width, st.y * height, st.size, 0, Math.PI * 2);
-            ctx.fill();
-          });
+            ctx.fillStyle = `rgba(186, 230, 253, ${st.alpha})`;
+            ctx.fillRect(st.x * viewW, st.y * viewH, st.size, st.size);
+          }
 
-          // Synthwave Perspective Grid at bottom
-          const horizonY = height * 0.72;
-          ctx.strokeStyle = "rgba(0, 240, 255, 0.12)";
+          const { turretX, turretY, barrierY } = getPlayfieldMetrics();
+
+          // Subtle Orbital Horizon Grid
+          const horizonY = barrierY - 24;
+          ctx.strokeStyle = "rgba(34, 211, 238, 0.08)";
           ctx.lineWidth = 1;
-          for (let i = 0; i <= 8; i++) {
-            const y = horizonY + Math.pow(i / 8, 2) * (height - horizonY);
+          for (let i = 0; i <= 4; i++) {
+            const y = horizonY + Math.pow(i / 4, 1.8) * (viewH - horizonY);
             ctx.beginPath();
             ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-            ctx.stroke();
-          }
-          for (let i = -10; i <= 10; i++) {
-            ctx.beginPath();
-            ctx.moveTo(width / 2, horizonY);
-            ctx.lineTo(width / 2 + i * (width / 10), height);
+            ctx.lineTo(viewW, y);
             ctx.stroke();
           }
 
-          // Perimeter Barrier Line (elevated safely above missile launcher)
-          const barrierY = height - 240;
-          ctx.strokeStyle = hullHealth > 30 ? "rgba(0, 240, 255, 0.45)" : "rgba(239, 68, 68, 0.75)";
-          ctx.lineWidth = 2;
-          ctx.setLineDash([8, 6]);
+          // Perimeter Shield Arc
+          ctx.strokeStyle = hullHealth > 30 ? "rgba(34, 211, 238, 0.36)" : "rgba(244, 63, 94, 0.75)";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([7, 7]);
           ctx.beginPath();
           ctx.moveTo(0, barrierY);
-          ctx.lineTo(width, barrierY);
+          ctx.lineTo(viewW, barrierY);
           ctx.stroke();
           ctx.setLineDash([]);
 
-          // Defense Missile Launcher & Plasma Cannon (positioned clearly above the keyboard)
-          const turretX = width / 2;
-          const turretY = height - 210;
-
+          // Active Target Laser Sightline
           const activeTarget = targets.find(t => t.id === activeTargetId);
           let turretAngle = -Math.PI / 2;
           if (activeTarget) {
-            const tx = (activeTarget.x / 100) * width;
-            const ty = (activeTarget.y / 100) * height;
+            const tx = (activeTarget.x / 100) * viewW;
+            const ty = (activeTarget.y / 100) * viewH;
             turretAngle = Math.atan2(ty - turretY, tx - turretX);
+
+            ctx.strokeStyle = "rgba(245, 158, 11, 0.16)";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 6]);
+            ctx.beginPath();
+            ctx.moveTo(turretX, turretY);
+            ctx.lineTo(tx, ty);
+            ctx.stroke();
+            ctx.setLineDash([]);
           }
 
-          // Armored Turret Base Platform
-          ctx.fillStyle = "rgba(10, 16, 32, 0.95)";
-          ctx.strokeStyle = "rgba(0, 240, 255, 0.4)";
+          // Starfighter Turret Base Pedestal
+          ctx.fillStyle = "rgba(9, 15, 30, 0.96)";
+          ctx.strokeStyle = "rgba(34, 211, 238, 0.45)";
           ctx.lineWidth = 1.5;
           ctx.beginPath();
-          ctx.roundRect(turretX - 44, turretY + 6, 88, 20, 4);
+          ctx.roundRect(turretX - 36, turretY + 4, 72, 14, 5);
           ctx.fill();
           ctx.stroke();
 
-          // Base Tread/Platform Accents
-          ctx.fillStyle = "#00f0ff";
-          ctx.fillRect(turretX - 38, turretY + 20, 76, 2);
-
-          // Turret Core Glow (Pulsing Plasma Field)
-          const tGrad = ctx.createRadialGradient(turretX, turretY, 5, turretX, turretY, 48);
-          tGrad.addColorStop(0, "rgba(0, 240, 255, 0.55)");
-          tGrad.addColorStop(0.6, "rgba(139, 92, 246, 0.25)");
-          tGrad.addColorStop(1, "rgba(0, 240, 255, 0)");
-          ctx.fillStyle = tGrad;
-          ctx.beginPath();
-          ctx.arc(turretX, turretY, 48, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Swivel Cannon & Missile Pod Assemblies
+          // Player Defense Starfighter
           ctx.save();
           ctx.translate(turretX, turretY);
           ctx.rotate(turretAngle);
+          const recoil = -lastTurretRecoil * 5;
 
-          // Dual Heavy Plasma Barrels
-          ctx.fillStyle = "#00f0ff";
-          ctx.shadowColor = "#00f0ff";
-          ctx.shadowBlur = 8;
-          ctx.fillRect(4, -8, 34, 4);
-          ctx.fillRect(4, 4, 34, 4);
-          ctx.shadowBlur = 0;
+          // Animated Ion Thruster Flame
+          const flameLen = 10 + Math.sin(now * 0.04) * 3;
+          ctx.fillStyle = combo >= 15 ? "rgba(251, 191, 36, 0.65)" : "rgba(34, 211, 238, 0.65)";
+          ctx.beginPath();
+          ctx.moveTo(-11, -5);
+          ctx.lineTo(-11 - flameLen, 0);
+          ctx.lineTo(-11, 5);
+          ctx.closePath();
+          ctx.fill();
 
-          // Missile Launcher Pod Shell (Heavy Armor)
+          // Twin Rail Barrels
+          ctx.fillStyle = "rgba(34, 211, 238, 0.25)";
+          ctx.fillRect(2 + recoil, -8, 30, 5);
+          ctx.fillRect(2 + recoil, 3, 30, 5);
+          ctx.fillStyle = "#22d3ee";
+          ctx.fillRect(4 + recoil, -6.5, 26, 2.5);
+          ctx.fillRect(4 + recoil, 4, 26, 2.5);
+
+          // Muzzle Flash
+          if (muzzleFlashAlpha > 0.05) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${muzzleFlashAlpha})`;
+            ctx.beginPath();
+            ctx.arc(32 + recoil, 0, 6 * muzzleFlashAlpha, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Starfighter Hull
           ctx.fillStyle = "#0f172a";
-          ctx.strokeStyle = "#8b5cf6";
-          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = "#818cf8";
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(0, 0, 18, 0, Math.PI * 2);
+          ctx.moveTo(21, 0);
+          ctx.lineTo(-13, -15);
+          ctx.lineTo(-7, 0);
+          ctx.lineTo(-13, 15);
+          ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Glowing Plasma Core
-          ctx.fillStyle = combo >= 20 ? "#ffd000" : "#00f0ff";
+          ctx.fillStyle = combo >= 15 ? "#fbbf24" : "#22d3ee";
           ctx.beginPath();
-          ctx.arc(0, 0, 7, 0, Math.PI * 2);
+          ctx.arc(1, 0, 4.5, 0, Math.PI * 2);
           ctx.fill();
-
-          // Aiming Laser Pointer Dot
-          ctx.strokeStyle = "rgba(0, 240, 255, 0.4)";
-          ctx.lineWidth = 1;
-          ctx.setLineDash([4, 4]);
-          ctx.beginPath();
-          ctx.moveTo(38, 0);
-          ctx.lineTo(80, 0);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
           ctx.restore();
 
-          // Laser Beams
-          lasers.forEach(l => {
-            ctx.strokeStyle = l.color;
-            ctx.lineWidth = 3;
-            ctx.shadowColor = l.color;
-            ctx.shadowBlur = 10;
+          // Plasma Lasers
+          for (let i = 0; i < lasers.length; i++) {
+            const l = lasers[i];
             const curX = l.startX + (l.targetX - l.startX) * l.progress;
             const curY = l.startY + (l.targetY - l.startY) * l.progress;
+            ctx.strokeStyle = l.color === "#fbbf24" ? "rgba(251, 191, 36, 0.3)" : "rgba(34, 211, 238, 0.3)";
+            ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.moveTo(l.startX, l.startY);
             ctx.lineTo(curX, curY);
             ctx.stroke();
-            ctx.shadowBlur = 0;
-          });
 
-          // EMP Shockwave
-          if (empShockwaveRadius > 0) {
-            ctx.save();
-            ctx.strokeStyle = "rgba(255, 208, 0, 0.85)";
-            ctx.lineWidth = 6;
-            ctx.shadowColor = "#ffd000";
-            ctx.shadowBlur = 24;
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(width / 2, height / 2, empShockwaveRadius, 0, Math.PI * 2);
+            ctx.moveTo(l.startX, l.startY);
+            ctx.lineTo(curX, curY);
             ctx.stroke();
-            ctx.restore();
           }
 
-          // Word Target Pods
-          targets.forEach(t => {
-            const tx = (t.x / 100) * width;
-            const ty = (t.y / 100) * height;
+          // Expanding Shockwave Rings
+          for (let i = 0; i < shockwaves.length; i++) {
+            const s = shockwaves[i];
+            ctx.globalAlpha = Math.max(0, s.alpha);
+            ctx.strokeStyle = s.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          ctx.globalAlpha = 1;
+
+          if (empShockwaveRadius > 0) {
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.85)";
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(viewW / 2, viewH / 2, empShockwaveRadius, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // Hostile Spacecraft & Word Pods
+          ctx.textBaseline = "middle";
+          for (let i = 0; i < targets.length; i++) {
+            const t = targets[i];
+            const tx = (t.x / 100) * viewW;
+            const ty = (t.y / 100) * viewH;
             const isLocked = t.id === activeTargetId;
+            const isPhantom = t.kind === "phantom" && (now - (t.spawnTime || now) > 1200);
 
             ctx.save();
             ctx.translate(tx, ty);
 
-            const podW = Math.max(t.word.length * 15 + 34, 85);
-            const podH = 34;
+            drawEnemyCraft(t, now);
+
+            const podW = Math.max(t.word.length * 10.5 + 26, 74);
+            const podH = 28;
             const hw = podW / 2;
             const hh = podH / 2;
 
-            ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
-            ctx.strokeStyle = isLocked ? "#ffd000" : t.glowColor;
-            ctx.lineWidth = isLocked ? 2.5 : 1.5;
-
-            if (isLocked) {
-              ctx.shadowColor = "#ffd000";
-              ctx.shadowBlur = 14;
-            }
-
+            // Subtle connector stem
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.25)";
+            ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.roundRect(-hw, -hh, podW, podH, 8);
+            ctx.moveTo(0, -19);
+            ctx.lineTo(0, -hh);
+            ctx.stroke();
+
+            // Word Tag Capsule
+            ctx.fillStyle = isLocked ? "rgba(15, 23, 42, 0.98)" : "rgba(8, 13, 27, 0.94)";
+            ctx.strokeStyle = isLocked ? "#fbbf24" : t.glowColor;
+            ctx.lineWidth = isLocked ? 2 : 1.2;
+            ctx.beginPath();
+            ctx.roundRect(-hw, -hh, podW, podH, 6);
             ctx.fill();
             ctx.stroke();
-            ctx.shadowBlur = 0;
 
-            // Reticle brackets for locked target
+            // Corner Reticles when Locked
             if (isLocked) {
-              ctx.strokeStyle = "#ffd000";
-              ctx.lineWidth = 2;
-              const b = 6;
-              // TL
-              ctx.beginPath(); ctx.moveTo(-hw - 5, -hh + b); ctx.lineTo(-hw - 5, -hh - 5); ctx.lineTo(-hw + b, -hh - 5); ctx.stroke();
-              // TR
-              ctx.beginPath(); ctx.moveTo(hw + 5, -hh + b); ctx.lineTo(hw + 5, -hh - 5); ctx.lineTo(hw - b, -hh - 5); ctx.stroke();
-              // BL
-              ctx.beginPath(); ctx.moveTo(-hw - 5, hh - b); ctx.lineTo(-hw - 5, hh + 5); ctx.lineTo(-hw + b, hh + 5); ctx.stroke();
-              // BR
-              ctx.beginPath(); ctx.moveTo(hw + 5, hh - b); ctx.lineTo(hw + 5, hh + 5); ctx.lineTo(hw - b, hh + 5); ctx.stroke();
+              ctx.strokeStyle = "#fbbf24";
+              ctx.lineWidth = 1.8;
+              const b = 5;
+              ctx.beginPath(); ctx.moveTo(-hw - 4, -hh + b); ctx.lineTo(-hw - 4, -hh - 4); ctx.lineTo(-hw + b, -hh - 4); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(hw + 4, -hh + b); ctx.lineTo(hw + 4, -hh - 4); ctx.lineTo(hw - b, -hh - 4); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(-hw - 4, hh - b); ctx.lineTo(-hw - 4, hh + 4); ctx.lineTo(-hw + b, hh + 4); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(hw + 4, hh - b); ctx.lineTo(hw + 4, hh + 4); ctx.lineTo(hw - b, hh + 4); ctx.stroke();
             }
 
-            // Word Characters
-            ctx.font = "bold 16px 'JetBrains Mono', monospace";
-            ctx.textBaseline = "middle";
+            if (t.kind === "firewall" && t.firewallTimer !== undefined) {
+              const pct = Math.max(0, t.firewallTimer / t.maxFirewallTimer);
+              ctx.strokeStyle = "#f43f5e";
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(-hw + 11, 0, 5.5, -Math.PI / 2, -Math.PI / 2 + pct * Math.PI * 2);
+              ctx.stroke();
+            }
 
+            ctx.font = "700 13.5px 'JetBrains Mono', monospace";
+            ctx.textAlign = "left";
             const typed = t.word.slice(0, t.typedIndex);
             const nextCh = t.word[t.typedIndex] || "";
             const remain = t.word.slice(t.typedIndex + 1);
 
             const totalW = ctx.measureText(t.word).width;
-            let startX = -totalW / 2;
+            let startX = -totalW / 2 + (t.kind === "firewall" ? 6 : 0);
 
             if (typed) {
-              ctx.fillStyle = "#ffd000";
+              ctx.fillStyle = "#fbbf24";
               ctx.fillText(typed, startX, 0);
               startX += ctx.measureText(typed).width;
             }
-
             if (nextCh) {
+              const disp = isPhantom ? "?" : nextCh;
               ctx.fillStyle = isLocked ? "#ffffff" : "#38bdf8";
-              ctx.fillText(nextCh, startX, 0);
+              ctx.fillText(disp, startX, 0);
               if (isLocked) {
-                ctx.fillStyle = "#00f0ff";
-                ctx.fillRect(startX, 9, ctx.measureText(nextCh).width, 2.5);
+                ctx.fillStyle = "#22d3ee";
+                ctx.fillRect(startX, 8, ctx.measureText(disp).width, 2);
               }
-              startX += ctx.measureText(nextCh).width;
+              startX += ctx.measureText(disp).width;
             }
-
             if (remain) {
-              ctx.fillStyle = "#94a3b8";
-              ctx.fillText(remain, startX, 0);
+              const dispRem = isPhantom ? "?".repeat(remain.length) : remain;
+              ctx.fillStyle = isPhantom ? "#64748b" : "#cbd5e1";
+              ctx.fillText(dispRem, startX, 0);
             }
 
             ctx.restore();
-          });
+          }
 
-          // Particles
-          particles.forEach(p => {
+          // Horror-Storm Sparks, Ash & Fading Trails
+          ctx.lineCap = "round";
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            const lifeRatio = Math.max(0, p.life / p.maxLife);
+
+            if (p.trail && p.trail.length > 0) {
+              const tLen = p.trail.length;
+              ctx.strokeStyle = p.color;
+              for (let j = 0; j < tLen; j++) {
+                const ptA = p.trail[j];
+                const ptB = j < tLen - 1 ? p.trail[j + 1] : p;
+                const segRatio = (j + 1) / (tLen + 1);
+                ctx.globalAlpha = lifeRatio * segRatio * 0.72;
+                ctx.lineWidth = Math.max(0.6, p.size * segRatio * 1.15);
+                ctx.beginPath();
+                ctx.moveTo(ptA.x, ptA.y);
+                ctx.lineTo(ptB.x, ptB.y);
+                ctx.stroke();
+              }
+            }
+
+            ctx.globalAlpha = lifeRatio;
             ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.life / p.maxLife;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.globalAlpha = 1;
-          });
+            ctx.fillRect(p.x - p.size * 0.5, p.y - p.size * 0.5, p.size, p.size);
+            if (p.trail && lifeRatio > 0.65) {
+              ctx.fillStyle = "#ffffff";
+              ctx.globalAlpha = (lifeRatio - 0.65) * 1.8;
+              ctx.fillRect(p.x - 0.8, p.y - 0.8, 1.6, 1.6);
+            }
+          }
+          ctx.globalAlpha = 1;
 
-          // Floating Text
-          floatingTexts.forEach(ft => {
-            ctx.save();
-            ctx.font = "bold 15px 'Chakra Petch', sans-serif";
+          // Score Popups
+          ctx.font = "700 12px 'JetBrains Mono', monospace";
+          ctx.textAlign = "center";
+          for (let i = 0; i < floatingTexts.length; i++) {
+            const ft = floatingTexts[i];
+            ctx.globalAlpha = Math.max(0, ft.alpha);
             ctx.fillStyle = ft.color;
-            ctx.globalAlpha = ft.alpha;
-            ctx.shadowColor = ft.color;
-            ctx.shadowBlur = 8;
-            ctx.textAlign = "center";
             ctx.fillText(ft.text, ft.x, ft.y);
-            ctx.restore();
-          });
+          }
+          ctx.globalAlpha = 1;
 
           ctx.restore();
         }
 
         // ==========================================
-        // 11. GAME FLOW CONTROL
+        // 12. GAME FLOW CONTROL
         // ==========================================
         function startGame(mode) {
           gameMode = mode;
@@ -1778,10 +2814,9 @@
           combo = 1;
           maxCombo = 1;
           hullHealth = 100;
-          wave = 1;
           empCharge = 0;
-          timeLeft = 60;
-          wordsDestroyed = 0;
+          threatLevel = 1;
+          timeLeft = 45;
           totalCorrectKeystrokes = 0;
           totalErrors = 0;
           gameStartTime = performance.now();
@@ -1790,16 +2825,18 @@
           activeTargetId = null;
           lasers = [];
           particles = [];
+          shockwaves = [];
           floatingTexts = [];
+          prevHud = { score: -1, wpm: -1, acc: -1, shield: -1, timer: "", threat: -1, combo: -1, danger: false };
           for (let k in errorKeyCounts) delete errorKeyCounts[k];
 
-          // UI switches
           document.getElementById("titleModal").classList.remove("active");
           document.getElementById("pauseModal").classList.remove("active");
           document.getElementById("gameOverModal").classList.remove("active");
           document.getElementById("hudLayer").style.display = "flex";
 
           sound.init();
+          updateEMPButtonState();
           spawnTarget();
         }
 
@@ -1813,17 +2850,11 @@
           document.getElementById("pauseModal").classList.remove("active");
         }
 
-        function toggleVirtualKeyboard() {
-          const kb = document.getElementById("virtualKeyboard");
-          kb.classList.toggle("hidden");
-        }
-
         function endGame(isVictory) {
           gameState = "gameover";
           document.getElementById("hudLayer").style.display = "none";
-          document.getElementById("dangerAlert").classList.remove("active");
+          domDangerAlert.classList.remove("active");
 
-          // Save high scores
           if (score > highScore) {
             highScore = score;
             localStorage.setItem("typestrike_high_score", highScore);
@@ -1832,43 +2863,93 @@
             bestWpm = wpm;
             localStorage.setItem("typestrike_best_wpm", bestWpm);
           }
+          updateOperativeHUD();
 
-          // Calculate combat rank
           let rank = "C";
           let color = "#94a3b8";
-          if (wpm >= 75 && accuracy >= 95) { rank = "S"; color = "#ffd000"; }
-          else if (wpm >= 55 && accuracy >= 90) { rank = "A"; color = "#00f0ff"; }
-          else if (wpm >= 35 && accuracy >= 80) { rank = "B"; color = "#8b5cf6"; }
+          if (wpm >= 75 && accuracy >= 95) { rank = "S"; color = "#fbbf24"; }
+          else if (wpm >= 55 && accuracy >= 90) { rank = "A"; color = "#22d3ee"; }
+          else if (wpm >= 35 && accuracy >= 80) { rank = "B"; color = "#818cf8"; }
 
           const rankEl = document.getElementById("goRankCircle");
           rankEl.textContent = rank;
           rankEl.style.borderColor = color;
           rankEl.style.color = color;
 
-          document.getElementById("goTitle").textContent = isVictory ? "DEFENSE VICTORY!" : "BASE COMPROMISED";
-          document.getElementById("goSubtitle").textContent = isVictory ? "Hostiles eliminated. Grid secured!" : "Shield collapsed. Data analysis ready.";
-          document.getElementById("goScore").textContent = score.toLocaleString();
-          document.getElementById("goWpm").innerHTML = `${wpm} <span style="font-size: 11px; color: #64748b;">WPM</span>`;
-          document.getElementById("goAccuracy").textContent = `${accuracy}%`;
-          document.getElementById("goCombo").textContent = `${maxCombo}x`;
+          const mins = Math.floor(survivalSeconds / 60);
+          const secs = Math.floor(survivalSeconds % 60);
+          const timeStr = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 
-          // Weak Keys Diagnostic
-          const weakKeysList = Object.keys(errorKeyCounts).sort((a, b) => errorKeyCounts[b] - errorKeyCounts[a]).slice(0, 4);
+          const rankResult = recordToLeaderboard(gameMode, score, wpm, accuracy, timeStr);
+
+          document.getElementById("goTitle").textContent = isVictory ? "Grid Defended" : "Perimeter Breached";
+          document.getElementById("goSubtitle").textContent = isVictory ? "Hostiles cleared. Sector integrity secured." : "Defense telemetry synced with global ranks.";
+          document.getElementById("goScore").textContent = score.toLocaleString();
+          document.getElementById("goWpm").innerHTML = `${wpm} <span style="font-size: 10px; color: #64748b;">WPM</span>`;
+          document.getElementById("goAccuracy").textContent = `${accuracy}%`;
+          document.getElementById("goBoardRank").textContent = `#${rankResult.rank} / ${rankResult.total}`;
+
+          const weakKeysList = Object.keys(errorKeyCounts).sort((a, b) => errorKeyCounts[b] - errorKeyCounts[a]).slice(0, 3);
           const weakKeyEl = document.getElementById("goWeakKeys");
           if (weakKeysList.length > 0) {
-            weakKeyEl.textContent = weakKeysList.map(k => `"${k.toUpperCase()}" (${errorKeyCounts[k]} miss)`).join(", ");
-            weakKeyEl.style.color = "#ff007f";
+            weakKeyEl.textContent = weakKeysList.map(k => `"${k.toUpperCase()}" (${errorKeyCounts[k]})`).join(", ");
+            weakKeyEl.style.color = "#fb7185";
           } else {
-            weakKeyEl.textContent = "None (Flawless precision!)";
-            weakKeyEl.style.color = "#00ff88";
+            weakKeyEl.textContent = "None (Flawless)";
+            weakKeyEl.style.color = "#34d399";
           }
 
           document.getElementById("gameOverModal").classList.add("active");
         }
 
         // ==========================================
-        // 12. UI BUTTON LISTENERS
+        // 13. UI EVENT LISTENERS
         // ==========================================
+        const enlistModal = document.getElementById("enlistModal");
+        const enlistInput = document.getElementById("enlistNameInput");
+        const enlistError = document.getElementById("enlistError");
+        const enlistCharCount = document.getElementById("enlistCharCount");
+
+        enlistInput.addEventListener("input", () => {
+          enlistCharCount.textContent = `${enlistInput.value.length} / 14`;
+        });
+
+        function handleEnlistSubmit() {
+          const rawVal = (enlistInput.value || "").trim().replace(/\s+/g, "_");
+          if (rawVal.length < 2) {
+            enlistError.textContent = "* Call-Sign must be at least 2 characters.";
+            enlistError.style.display = "block";
+            return;
+          }
+          if (isNameTakenByOther(rawVal)) {
+            enlistError.textContent = `* "${rawVal.toUpperCase()}" is already taken. Enter a unique Call-Sign.`;
+            enlistError.style.display = "block";
+            return;
+          }
+          enlistError.style.display = "none";
+          saveOperativeProfile(rawVal);
+          enlistModal.classList.remove("active");
+          document.getElementById("titleModal").classList.add("active");
+          gameState = "title";
+          renderLeaderboardTable(gameMode);
+        }
+
+        document.getElementById("btnAuthorizeEnlist").addEventListener("click", handleEnlistSubmit);
+        enlistInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") handleEnlistSubmit();
+        });
+
+        document.getElementById("btnEditProfile").addEventListener("click", () => {
+          document.getElementById("titleModal").classList.remove("active");
+          enlistInput.value = operativeProfile.name;
+          enlistCharCount.textContent = `${operativeProfile.name.length} / 14`;
+          enlistError.style.display = "none";
+          enlistModal.classList.add("active");
+          gameState = "enlist";
+        });
+
+        domEmpBtn.addEventListener("click", attemptTriggerEMP);
+
         document.getElementById("btnStartGame").addEventListener("click", () => startGame(gameMode));
         document.getElementById("btnPlayAgain").addEventListener("click", () => startGame(gameMode));
         document.getElementById("btnResume").addEventListener("click", resumeGame);
@@ -1880,49 +2961,65 @@
           document.getElementById("pauseModal").classList.remove("active");
           document.getElementById("titleModal").classList.add("active");
           document.getElementById("hudLayer").style.display = "none";
-          document.getElementById("titleHighScore").textContent = `${highScore.toLocaleString()} PTS`;
-          document.getElementById("titleBestWpm").textContent = `${bestWpm} WPM`;
+          renderLeaderboardTable(activeLbCategory);
         });
 
         document.getElementById("btnGoMenu").addEventListener("click", () => {
           gameState = "title";
           document.getElementById("gameOverModal").classList.remove("active");
           document.getElementById("titleModal").classList.add("active");
-          document.getElementById("titleHighScore").textContent = `${highScore.toLocaleString()} PTS`;
-          document.getElementById("titleBestWpm").textContent = `${bestWpm} WPM`;
+          renderLeaderboardTable(activeLbCategory);
         });
 
-        // Mode cards selection
         document.querySelectorAll(".mode-card").forEach(card => {
           card.addEventListener("click", () => {
             document.querySelectorAll(".mode-card").forEach(c => c.classList.remove("selected"));
             card.classList.add("selected");
             gameMode = card.getAttribute("data-mode");
+            renderLeaderboardTable(gameMode);
           });
         });
 
-        // Mute Buttons
-        function updateMuteButtons() {
-          const isM = sound.isMuted;
-          document.getElementById("btnMuteHud").textContent = isM ? "🔇" : "🔊";
-          document.getElementById("btnSoundTogglePause").textContent = isM ? "Sound: OFF" : "Sound: ON";
+        const btnToggleLb = document.getElementById("btnToggleLeaderboard");
+        const lbContent = document.getElementById("leaderboardContent");
+        const lbToggleText = document.getElementById("lbToggleText");
+
+        if (btnToggleLb && lbContent) {
+          btnToggleLb.addEventListener("click", () => {
+            const isExpanded = lbContent.classList.toggle("expanded");
+            if (lbToggleText) lbToggleText.textContent = isExpanded ? "Close ▴" : "Ranks ▾";
+            if (isExpanded) renderLeaderboardTable(activeLbCategory);
+          });
         }
+
+        document.querySelectorAll(".lb-tab-btn").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            renderLeaderboardTable(btn.getAttribute("data-cat"));
+          });
+        });
+
         document.getElementById("btnMuteHud").addEventListener("click", () => {
           sound.toggleMute();
-          updateMuteButtons();
-        });
-        document.getElementById("btnSoundTogglePause").addEventListener("click", () => {
-          sound.toggleMute();
-          updateMuteButtons();
+          document.getElementById("iconSoundOn").style.display = sound.isMuted ? "none" : "block";
+          document.getElementById("iconSoundOff").style.display = sound.isMuted ? "block" : "none";
         });
 
         document.getElementById("btnKeyboardToggle").addEventListener("click", toggleVirtualKeyboard);
+        document.getElementById("btnHideKeyboard").addEventListener("click", toggleVirtualKeyboard);
 
-        // Populate initial high score
-        document.getElementById("titleHighScore").textContent = `${highScore.toLocaleString()} PTS`;
-        document.getElementById("titleBestWpm").textContent = `${bestWpm} WPM`;
+        if (loadOperativeProfile()) {
+          enlistModal.classList.remove("active");
+          document.getElementById("titleModal").classList.add("active");
+          gameState = "title";
+          updateOperativeHUD();
+        } else {
+          enlistModal.classList.add("active");
+          document.getElementById("titleModal").classList.remove("active");
+          gameState = "enlist";
+        }
 
-        // Start 60fps Loop
+        renderLeaderboardTable("arcade");
         requestAnimationFrame(gameLoop);
       })();
     </script>
