@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidCallSign(callSign) {
+      return callSign is string
+        && callSign.size() >= 2
+        && callSign.size() <= 14
+        && callSign.matches('^[A-Z0-9_]{2,14}$');
+    }
+
+    function isValidOwnerHash(hash) {
+      return hash is string
+        && hash.size() >= 16
+        && hash.size() <= 64
+        && hash.matches('^[a-f0-9]{16,64}$');
+    }
+
+    function isValidMode(mode) {
+      return mode in ['arcade', 'time-attack', 'code', 'home-row'];
+    }
+
+    function isValidEntryId(entryId) {
+      return entryId is string
+        && entryId.size() >= 7
+        && entryId.size() <= 30
+        && entryId.matches('^(arcade|time-attack|code|home-row)_[A-Z0-9_]{2,14}$');
+    }
+
+    function isValidOperative(data) {
+      return data.keys().hasAll(['name', 'ownerHash', 'createdAt'])
+        && data.keys().hasOnly(['name', 'ownerHash', 'createdAt'])
+        && isValidCallSign(data.name)
+        && isValidOwnerHash(data.ownerHash)
+        && data.createdAt == request.time;
+    }
+
+    function isValidLeaderboardEntry(data) {
+      return data.keys().hasAll(['mode', 'name', 'ownerHash', 'score', 'wpm', 'acc', 'time', 'updatedAt'])
+        && data.keys().hasOnly(['mode', 'name', 'ownerHash', 'score', 'wpm', 'acc', 'time', 'updatedAt'])
+        && isValidMode(data.mode)
+        && isValidCallSign(data.name)
+        && isValidOwnerHash(data.ownerHash)
+        && data.score is number && data.score >= 0 && data.score <= 100000000
+        && data.wpm is number && data.wpm >= 0 && data.wpm <= 500
+        && data.acc is number && data.acc >= 0 && data.acc <= 100
+        && data.time is string && data.time.size() == 5 && data.time.matches('^[0-9]{2}:[0-9]{2}$')
+        && data.updatedAt == request.time;
+    }
+
+    // Startup connection check document
+    match /test/{docId} {
+      allow get: if docId == 'connection';
+      allow list, write: if false;
+    }
+
+    // Global unique operative call-sign registry (create-once, immutable)
+    match /operatives/{callSign} {
+      allow get: if isValidCallSign(callSign);
+      allow list: if false;
+      allow create: if isValidCallSign(callSign)
+        && isValidOperative(incoming())
+        && incoming().name == callSign;
+      allow update, delete: if false;
+    }
+
+    // Global per-mode leaderboard entries (unique per operative per mode)
+    match /leaderboards/{entryId} {
+      allow get: if isValidEntryId(entryId);
+      allow list: if isValidMode(resource.data.mode);
+      allow create: if isValidEntryId(entryId)
+        && isValidLeaderboardEntry(incoming())
+        && entryId == (incoming().mode + '_' + incoming().name)
+        && exists(/databases/$(database)/documents/operatives/$(incoming().name));
+      allow update: if isValidEntryId(entryId)
+        && isValidLeaderboardEntry(incoming())
+        && incoming().name == existing().name
+        && incoming().mode == existing().mode
+        && incoming().ownerHash == existing().ownerHash
+        && incoming().score >= existing().score
+        && incoming().diff(existing()).affectedKeys().hasOnly(['score', 'wpm', 'acc', 'time', 'updatedAt']);
+      allow delete: if false;
+    }
+  }
+}

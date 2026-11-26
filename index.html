@@ -1016,14 +1016,17 @@
         <div style="text-align: left; margin-bottom: 18px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
             <label for="enlistNameInput" style="font-size: 10px; font-weight: 700; color: var(--cyan); letter-spacing: 0.08em; text-transform: uppercase;">Unique Call-Sign</label>
-            <span id="enlistCharCount" class="tabular" style="font-size: 10px; color: var(--text-muted);">0 / 14</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="enlistStatusBadge" class="tabular" style="font-size: 9.5px; font-weight: 700; color: var(--text-muted);"></span>
+              <span id="enlistCharCount" class="tabular" style="font-size: 10px; color: var(--text-muted);">0 / 14</span>
+            </div>
           </div>
           <input id="enlistNameInput" class="cyber-input" type="text" maxlength="14" placeholder="e.g. SHADOW_STRIKER" />
           <div id="enlistError" style="font-size: 11px; color: var(--pink); margin-top: 6px; display: none; font-weight: 600;">* Call-Sign must be at least 2 characters and unique.</div>
         </div>
 
         <button id="btnAuthorizeEnlist" class="cyber-btn" style="width: 100%; padding: 13px;">
-          <span>Enter Command Deck</span>
+          <span id="btnAuthorizeEnlistLabel">Enter Command Deck</span>
         </button>
       </div>
     </div>
@@ -1164,7 +1167,15 @@
           </div>
         </div>
 
-        <div class="hud-card" style="padding: 9px 12px; margin-bottom: 16px; text-align: left;">
+        <div class="hud-card" style="padding: 9px 12px; margin-bottom: 10px; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span class="hud-label">Accuracy Trend</span>
+            <span id="goAccTrendRange" class="tabular" style="font-size: 10px; font-weight: 700; color: var(--green);">100%</span>
+          </div>
+          <div id="goAccuracyChartMount" style="width: 100%; min-height: 96px;"></div>
+        </div>
+
+        <div class="hud-card" style="padding: 9px 12px; margin-bottom: 14px; text-align: left;">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
             <span class="hud-label">Friction Keys</span>
             <span id="goWeakKeys" class="tabular" style="font-size: 11px; font-weight: 700; color: var(--gold-bright);">None (Flawless)</span>
@@ -1177,6 +1188,261 @@
         </div>
       </div>
     </div>
+
+    <!-- Firebase Global Operative Registry & Leaderboard Bridge -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        getDocFromServer,
+        getDocs,
+        collection,
+        query,
+        where,
+        runTransaction,
+        serverTimestamp
+      } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+      const OperationType = {
+        CREATE: "create",
+        UPDATE: "update",
+        DELETE: "delete",
+        LIST: "list",
+        GET: "get",
+        WRITE: "write"
+      };
+
+      let app = null;
+      let db = null;
+      let auth = null;
+      let cachedOwnerHash = null;
+
+      function handleFirestoreError(error, operationType, path) {
+        const errInfo = {
+          error: error instanceof Error ? error.message : String(error),
+          authInfo: {
+            userId: auth?.currentUser?.uid || null,
+            email: auth?.currentUser?.email || null,
+            emailVerified: auth?.currentUser?.emailVerified ?? null,
+            isAnonymous: auth?.currentUser?.isAnonymous ?? null,
+            tenantId: auth?.currentUser?.tenantId || null,
+            providerInfo: auth?.currentUser?.providerData?.map(p => ({
+              providerId: p.providerId,
+              email: p.email
+            })) || []
+          },
+          operationType,
+          path
+        };
+        console.error("Firestore Error:", JSON.stringify(errInfo));
+        throw new Error(JSON.stringify(errInfo));
+      }
+
+      async function getOwnerHash() {
+        if (cachedOwnerHash) return cachedOwnerHash;
+        let secret = "";
+        try {
+          secret = localStorage.getItem("typestrike_owner_secret") || "";
+          if (!secret) {
+            secret = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(36).slice(2));
+            localStorage.setItem("typestrike_owner_secret", secret);
+          }
+        } catch (e) {
+          secret = "fallback-" + Math.random().toString(36).slice(2);
+        }
+
+        if (window.crypto && window.crypto.subtle && window.TextEncoder) {
+          const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(secret));
+          cachedOwnerHash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
+        } else {
+          let h = 2166136261;
+          for (let i = 0; i < secret.length; i++) {
+            h ^= secret.charCodeAt(i);
+            h = Math.imul(h, 16777619);
+          }
+          cachedOwnerHash = (Math.abs(h).toString(16).padStart(8, "0") + "a1b2c3d4e5f60718").slice(0, 24);
+        }
+        return cachedOwnerHash;
+      }
+
+      async function testConnection() {
+        if (!db) return;
+        try {
+          await getDocFromServer(doc(db, "test", "connection"));
+        } catch (error) {
+          if (error instanceof Error && error.message.includes("the client is offline")) {
+            console.error("Please check your Firebase configuration.");
+          }
+        }
+      }
+
+      const readyPromise = (async () => {
+        try {
+          const resp = await fetch("./firebase-applet-config.json", { cache: "no-store" });
+          if (!resp.ok) throw new Error("Missing firebase-applet-config.json");
+          const firebaseConfig = await resp.json();
+          app = initializeApp(firebaseConfig);
+          db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+          auth = getAuth(app);
+          await testConnection();
+          return true;
+        } catch (err) {
+          console.warn("Firebase initialization deferred:", err);
+          return false;
+        }
+      })();
+
+      window.TypeStrikeCloud = {
+        readyPromise,
+
+        async checkNameAvailable(cleanName, myClaimedNames = []) {
+          const ready = await readyPromise;
+          if (!ready || !db) return { available: null, reason: "OFFLINE" };
+          const ownerHash = await getOwnerHash();
+          const path = `operatives/${cleanName}`;
+          try {
+            const snap = await getDocFromServer(doc(db, "operatives", cleanName));
+            if (!snap.exists()) return { available: true, ownedBySelf: false };
+            const data = snap.data();
+            const ownedBySelf = data.ownerHash === ownerHash && myClaimedNames.includes(cleanName);
+            return { available: ownedBySelf, ownedBySelf };
+          } catch (error) {
+            if (error?.message?.includes("Missing or insufficient permissions")) {
+              handleFirestoreError(error, OperationType.GET, path);
+            }
+            return { available: null, reason: "NETWORK" };
+          }
+        },
+
+        async claimUniqueName(cleanName, myClaimedNames = []) {
+          const ready = await readyPromise;
+          if (!ready || !db) return { ok: false, reason: "NETWORK" };
+          const ownerHash = await getOwnerHash();
+          const path = `operatives/${cleanName}`;
+
+          try {
+            await runTransaction(db, async (tx) => {
+              const ref = doc(db, "operatives", cleanName);
+              const snap = await tx.get(ref);
+              if (snap.exists()) {
+                const data = snap.data();
+                if (data.ownerHash === ownerHash && myClaimedNames.includes(cleanName)) {
+                  return;
+                }
+                throw new Error("NAME_TAKEN");
+              }
+              tx.set(ref, {
+                name: cleanName,
+                ownerHash,
+                createdAt: serverTimestamp()
+              });
+            });
+            return { ok: true, name: cleanName };
+          } catch (error) {
+            if (error?.message === "NAME_TAKEN") {
+              return { ok: false, reason: "TAKEN" };
+            }
+            if (error?.message?.includes("Missing or insufficient permissions")) {
+              // Permission denial on create can also happen if another client raced or rule rejected
+              try {
+                const existingSnap = await getDocFromServer(doc(db, "operatives", cleanName));
+                if (existingSnap.exists() && existingSnap.data().ownerHash !== ownerHash) {
+                  return { ok: false, reason: "TAKEN" };
+                }
+              } catch (_) {}
+              handleFirestoreError(error, OperationType.CREATE, path);
+            }
+            return { ok: false, reason: "NETWORK" };
+          }
+        },
+
+        async fetchModeLeaderboard(mode) {
+          const ready = await readyPromise;
+          if (!ready || !db) return null;
+          const path = "leaderboards";
+          try {
+            const q = query(collection(db, "leaderboards"), where("mode", "==", mode));
+            const snap = await getDocs(q);
+            const entries = [];
+            snap.forEach(d => {
+              const data = d.data();
+              if (data && data.name) {
+                entries.push({
+                  name: String(data.name).toUpperCase().trim(),
+                  score: Number(data.score) || 0,
+                  wpm: Number(data.wpm) || 0,
+                  acc: Number(data.acc) || 0,
+                  time: String(data.time || "00:00")
+                });
+              }
+            });
+            return entries;
+          } catch (error) {
+            if (error?.message?.includes("Missing or insufficient permissions")) {
+              handleFirestoreError(error, OperationType.LIST, path);
+            }
+            return null;
+          }
+        },
+
+        async syncScore(mode, cleanName, scoreVal, wpmVal, accVal, timeStr) {
+          const ready = await readyPromise;
+          if (!ready || !db) return false;
+          const ownerHash = await getOwnerHash();
+          const entryId = `${mode}_${cleanName}`;
+          const path = `leaderboards/${entryId}`;
+
+          try {
+            await runTransaction(db, async (tx) => {
+              const opRef = doc(db, "operatives", cleanName);
+              const opSnap = await tx.get(opRef);
+              if (!opSnap.exists()) {
+                tx.set(opRef, {
+                  name: cleanName,
+                  ownerHash,
+                  createdAt: serverTimestamp()
+                });
+              }
+
+              const lbRef = doc(db, "leaderboards", entryId);
+              const lbSnap = await tx.get(lbRef);
+              if (!lbSnap.exists()) {
+                tx.set(lbRef, {
+                  mode,
+                  name: cleanName,
+                  ownerHash,
+                  score: scoreVal,
+                  wpm: wpmVal,
+                  acc: accVal,
+                  time: timeStr,
+                  updatedAt: serverTimestamp()
+                });
+              } else {
+                const prev = lbSnap.data();
+                if (prev.ownerHash === ownerHash && scoreVal >= (prev.score || 0)) {
+                  tx.update(lbRef, {
+                    score: scoreVal,
+                    wpm: Math.max(prev.wpm || 0, wpmVal),
+                    acc: accVal,
+                    time: timeStr,
+                    updatedAt: serverTimestamp()
+                  });
+                }
+              }
+            });
+            return true;
+          } catch (error) {
+            if (error?.message?.includes("Missing or insufficient permissions")) {
+              handleFirestoreError(error, OperationType.WRITE, path);
+            }
+            return false;
+          }
+        }
+      };
+      window.dispatchEvent(new CustomEvent("TypeStrikeCloudReady"));
+    </script>
 
     <!-- High-Performance 60FPS Space Typing Engine -->
     <script>
@@ -1413,12 +1679,38 @@
           ]
         };
 
+        const RESERVED_NAMES = new Set(
+          Object.values(DEFAULT_LEADERBOARDS).flat().map(r => (r.name || "").toUpperCase().trim())
+        );
+
         let leaderboards = loadLeaderboards();
         let activeLbCategory = "arcade";
         let operativeProfile = { name: "" };
         let hasSavedProfile = false;
+        let myClaimedNames = loadClaimedNames();
         let highScore = parseInt(localStorage.getItem("typestrike_high_score") || "0", 10);
         let bestWpm = parseInt(localStorage.getItem("typestrike_best_wpm") || "0", 10);
+
+        function loadClaimedNames() {
+          try {
+            const raw = localStorage.getItem("typestrike_claimed_names");
+            if (raw) {
+              const arr = JSON.parse(raw);
+              if (Array.isArray(arr)) return arr.map(n => String(n).toUpperCase().trim()).filter(Boolean);
+            }
+          } catch(e) {}
+          return [];
+        }
+
+        function addClaimedName(name) {
+          const clean = name.toUpperCase().trim();
+          if (!myClaimedNames.includes(clean)) {
+            myClaimedNames.push(clean);
+            try {
+              localStorage.setItem("typestrike_claimed_names", JSON.stringify(myClaimedNames));
+            } catch(e) {}
+          }
+        }
 
         function loadLeaderboards() {
           try {
@@ -1449,9 +1741,17 @@
           } catch(e) {}
         }
 
-        function isNameTakenByOther(candidateName) {
-          const clean = candidateName.toUpperCase().trim();
-          if (hasSavedProfile && operativeProfile.name === clean) return false;
+        function normalizeCallSign(raw) {
+          return (raw || "").toUpperCase().trim().replace(/\s+/g, "_");
+        }
+
+        function isValidCallSignFormat(clean) {
+          return /^[A-Z0-9_]{2,14}$/.test(clean);
+        }
+
+        function isNameTakenLocally(clean) {
+          if (RESERVED_NAMES.has(clean)) return true;
+          if (myClaimedNames.includes(clean)) return false;
           for (const cat of Object.keys(leaderboards)) {
             const list = leaderboards[cat] || [];
             if (list.some(entry => (entry.name || "").toUpperCase().trim() === clean)) {
@@ -1467,7 +1767,9 @@
             if (raw) {
               const parsed = JSON.parse(raw);
               if (parsed.name && parsed.name.trim().length >= 2) {
-                operativeProfile = { name: parsed.name.toUpperCase().trim().slice(0, 14) };
+                const clean = normalizeCallSign(parsed.name).slice(0, 14);
+                operativeProfile = { name: clean };
+                addClaimedName(clean);
                 hasSavedProfile = true;
                 return true;
               }
@@ -1476,21 +1778,11 @@
           return false;
         }
 
-        function saveOperativeProfile(name) {
-          const oldName = operativeProfile.name;
-          const clean = name.toUpperCase().trim().replace(/\s+/g, "_").slice(0, 14);
+        function saveOperativeProfile(cleanName) {
+          const clean = normalizeCallSign(cleanName).slice(0, 14);
           operativeProfile = { name: clean };
           hasSavedProfile = true;
-
-          if (oldName && oldName !== clean) {
-            for (const cat of Object.keys(leaderboards)) {
-              const list = leaderboards[cat] || [];
-              list.forEach(r => {
-                if (r.name === oldName) r.name = clean;
-              });
-            }
-            saveLeaderboards();
-          }
+          addClaimedName(clean);
 
           try {
             localStorage.setItem("typestrike_operative_profile", JSON.stringify(operativeProfile));
@@ -1547,6 +1839,31 @@
           }).join("");
         }
 
+        async function syncLeaderboardFromCloud(cat) {
+          if (!window.TypeStrikeCloud) return;
+          const cloudRows = await window.TypeStrikeCloud.fetchModeLeaderboard(cat);
+          if (!cloudRows) return;
+
+          const map = new Map();
+          const base = (DEFAULT_LEADERBOARDS[cat] || []).concat(leaderboards[cat] || []);
+          for (const item of base) {
+            const upper = (item.name || "").toUpperCase().trim();
+            if (!upper) continue;
+            const prev = map.get(upper);
+            if (!prev || item.score > prev.score) map.set(upper, { ...item, name: upper });
+          }
+          for (const item of cloudRows) {
+            const upper = (item.name || "").toUpperCase().trim();
+            if (!upper) continue;
+            const prev = map.get(upper);
+            if (!prev || item.score >= prev.score) map.set(upper, { ...item, name: upper });
+          }
+
+          leaderboards[cat] = Array.from(map.values()).sort((a, b) => b.score - a.score || b.wpm - a.wpm || b.acc - a.acc);
+          saveLeaderboards();
+          if (activeLbCategory === cat) renderLeaderboardTable(cat);
+        }
+
         function recordToLeaderboard(mode, scoreVal, wpmVal, accVal, timeStr) {
           const list = leaderboards[mode] || [];
           const opName = (operativeProfile.name || "OPERATIVE").toUpperCase().trim();
@@ -1577,6 +1894,21 @@
           leaderboards[mode] = list;
           saveLeaderboards();
           renderLeaderboardTable(mode);
+
+          if (window.TypeStrikeCloud && isValidCallSignFormat(opName)) {
+            window.TypeStrikeCloud.syncScore(mode, opName, scoreVal, wpmVal, accVal, timeStr).then(() => {
+              syncLeaderboardFromCloud(mode).then(() => {
+                if (gameState === "gameover") {
+                  const updated = leaderboards[mode] || [];
+                  const rIdx = updated.findIndex(r => r.name === opName);
+                  const rankEl = document.getElementById("goBoardRank");
+                  if (rankEl && rIdx !== -1) {
+                    rankEl.textContent = `#${rIdx + 1} / ${updated.length}`;
+                  }
+                }
+              });
+            });
+          }
 
           const myRank = list.findIndex(r => r.name === opName) + 1;
           return { rank: myRank, total: list.length };
@@ -1669,6 +2001,8 @@
         let gameStartTime = 0;
         let totalCorrectKeystrokes = 0;
         let totalErrors = 0;
+        let accuracyHistory = [{ time: "0:00", sec: 0, accuracy: 100 }];
+        let lastAccSampleBucket = 0;
         const errorKeyCounts = {};
 
         let targets = [];
@@ -2231,6 +2565,21 @@
             wpm = Math.max(0, Math.round((totalCorrectKeystrokes / 5) / elapsedMin));
             const totalKeys = totalCorrectKeystrokes + totalErrors;
             accuracy = totalKeys > 0 ? Math.round((totalCorrectKeystrokes / totalKeys) * 100) : 100;
+          }
+
+          const sampleBucket = Math.floor(survivalSeconds / 2);
+          if (sampleBucket > lastAccSampleBucket) {
+            lastAccSampleBucket = sampleBucket;
+            const m = Math.floor(survivalSeconds / 60);
+            const s = Math.floor(survivalSeconds % 60);
+            accuracyHistory.push({
+              time: `${m}:${String(s).padStart(2, "0")}`,
+              sec: Math.round(survivalSeconds),
+              accuracy
+            });
+            if (accuracyHistory.length > 60) {
+              accuracyHistory = accuracyHistory.filter((_, idx) => idx === 0 || idx === accuracyHistory.length - 1 || idx % 2 === 0);
+            }
           }
 
           if (gameMode === "time-attack") {
@@ -2819,6 +3168,8 @@
           timeLeft = 45;
           totalCorrectKeystrokes = 0;
           totalErrors = 0;
+          accuracyHistory = [{ time: "0:00", sec: 0, accuracy: 100 }];
+          lastAccSampleBucket = 0;
           gameStartTime = performance.now();
           lastSpawnTime = performance.now();
           targets = [];
@@ -2899,7 +3250,21 @@
             weakKeyEl.style.color = "#34d399";
           }
 
+          const finalLabel = `${mins}:${String(secs).padStart(2, "0")}`;
+          const lastPt = accuracyHistory[accuracyHistory.length - 1];
+          if (!lastPt || lastPt.time !== finalLabel || lastPt.accuracy !== accuracy) {
+            accuracyHistory.push({ time: finalLabel === "0:00" ? "0:01" : finalLabel, sec: Math.max(1, Math.round(survivalSeconds)), accuracy });
+          }
+          const minTrendAcc = Math.min(...accuracyHistory.map(p => p.accuracy));
+          const rangeEl = document.getElementById("goAccTrendRange");
+          if (rangeEl) {
+            rangeEl.textContent = minTrendAcc === accuracy ? `${accuracy}% STEADY` : `${minTrendAcc}% – ${accuracy}%`;
+          }
+
           document.getElementById("gameOverModal").classList.add("active");
+          if (window.renderAccuracyTrendChart) {
+            window.renderAccuracyTrendChart(accuracyHistory.slice());
+          }
         }
 
         // ==========================================
@@ -2909,32 +3274,124 @@
         const enlistInput = document.getElementById("enlistNameInput");
         const enlistError = document.getElementById("enlistError");
         const enlistCharCount = document.getElementById("enlistCharCount");
+        const enlistStatusBadge = document.getElementById("enlistStatusBadge");
+        const btnAuthorizeEnlist = document.getElementById("btnAuthorizeEnlist");
+        const btnAuthorizeEnlistLabel = document.getElementById("btnAuthorizeEnlistLabel");
+
+        let enlistCheckTimer = null;
+        let isSubmittingEnlist = false;
 
         enlistInput.addEventListener("input", () => {
           enlistCharCount.textContent = `${enlistInput.value.length} / 14`;
+          enlistError.style.display = "none";
+          clearTimeout(enlistCheckTimer);
+
+          const clean = normalizeCallSign(enlistInput.value);
+          if (!clean) {
+            enlistStatusBadge.textContent = "";
+            return;
+          }
+          if (!isValidCallSignFormat(clean)) {
+            enlistStatusBadge.textContent = "A-Z, 0-9, _ ONLY";
+            enlistStatusBadge.style.color = "var(--pink)";
+            return;
+          }
+          if (isNameTakenLocally(clean)) {
+            enlistStatusBadge.textContent = "TAKEN";
+            enlistStatusBadge.style.color = "var(--pink)";
+            return;
+          }
+
+          enlistStatusBadge.textContent = "CHECKING...";
+          enlistStatusBadge.style.color = "var(--text-muted)";
+
+          enlistCheckTimer = setTimeout(async () => {
+            if (!window.TypeStrikeCloud) return;
+            const res = await window.TypeStrikeCloud.checkNameAvailable(clean, myClaimedNames);
+            if (normalizeCallSign(enlistInput.value) !== clean) return;
+            if (res.available === true) {
+              enlistStatusBadge.textContent = res.ownedBySelf ? "YOUR CALL-SIGN" : "AVAILABLE";
+              enlistStatusBadge.style.color = "var(--green)";
+            } else if (res.available === false) {
+              enlistStatusBadge.textContent = "TAKEN";
+              enlistStatusBadge.style.color = "var(--pink)";
+            } else {
+              enlistStatusBadge.textContent = "";
+            }
+          }, 300);
         });
 
-        function handleEnlistSubmit() {
-          const rawVal = (enlistInput.value || "").trim().replace(/\s+/g, "_");
-          if (rawVal.length < 2) {
+        async function handleEnlistSubmit() {
+          if (isSubmittingEnlist) return;
+          const clean = normalizeCallSign(enlistInput.value);
+          if (clean.length < 2) {
             enlistError.textContent = "* Call-Sign must be at least 2 characters.";
             enlistError.style.display = "block";
             return;
           }
-          if (isNameTakenByOther(rawVal)) {
-            enlistError.textContent = `* "${rawVal.toUpperCase()}" is already taken. Enter a unique Call-Sign.`;
+          if (!isValidCallSignFormat(clean)) {
+            enlistError.textContent = "* Use 2–14 letters, numbers, or underscores only.";
             enlistError.style.display = "block";
             return;
           }
+          if (isNameTakenLocally(clean)) {
+            enlistError.textContent = `* "${clean}" is already taken. Enter a unique Call-Sign.`;
+            enlistError.style.display = "block";
+            return;
+          }
+
+          isSubmittingEnlist = true;
+          btnAuthorizeEnlist.disabled = true;
+          btnAuthorizeEnlist.style.opacity = "0.75";
+          btnAuthorizeEnlistLabel.textContent = "Verifying Unique Call-Sign...";
           enlistError.style.display = "none";
-          saveOperativeProfile(rawVal);
-          enlistModal.classList.remove("active");
-          document.getElementById("titleModal").classList.add("active");
-          gameState = "title";
-          renderLeaderboardTable(gameMode);
+
+          try {
+            let cloud = window.TypeStrikeCloud;
+            if (!cloud) {
+              cloud = await new Promise((resolve) => {
+                const timer = setTimeout(() => resolve(window.TypeStrikeCloud || null), 5000);
+                window.addEventListener("TypeStrikeCloudReady", () => {
+                  clearTimeout(timer);
+                  resolve(window.TypeStrikeCloud || null);
+                }, { once: true });
+              });
+            }
+
+            if (!cloud) {
+              enlistError.textContent = "* Could not connect to global Call-Sign registry. Please retry.";
+              enlistError.style.display = "block";
+              return;
+            }
+
+            const claimRes = await cloud.claimUniqueName(clean, myClaimedNames);
+            if (!claimRes.ok) {
+              if (claimRes.reason === "TAKEN") {
+                enlistError.textContent = `* "${clean}" is already taken by another player. Enter a unique Call-Sign.`;
+                enlistStatusBadge.textContent = "TAKEN";
+                enlistStatusBadge.style.color = "var(--pink)";
+              } else {
+                enlistError.textContent = "* Could not verify global Call-Sign uniqueness. Please check your connection and try again.";
+              }
+              enlistError.style.display = "block";
+              return;
+            }
+
+            saveOperativeProfile(clean);
+            enlistModal.classList.remove("active");
+            document.getElementById("titleModal").classList.add("active");
+            gameState = "title";
+            renderLeaderboardTable(gameMode);
+            syncLeaderboardFromCloud(gameMode);
+          } finally {
+            isSubmittingEnlist = false;
+            btnAuthorizeEnlist.disabled = false;
+            btnAuthorizeEnlist.style.opacity = "1";
+            btnAuthorizeEnlistLabel.textContent = "Enter Command Deck";
+          }
         }
 
-        document.getElementById("btnAuthorizeEnlist").addEventListener("click", handleEnlistSubmit);
+        btnAuthorizeEnlist.addEventListener("click", handleEnlistSubmit);
         enlistInput.addEventListener("keydown", (e) => {
           if (e.key === "Enter") handleEnlistSubmit();
         });
@@ -2943,6 +3400,7 @@
           document.getElementById("titleModal").classList.remove("active");
           enlistInput.value = operativeProfile.name;
           enlistCharCount.textContent = `${operativeProfile.name.length} / 14`;
+          enlistStatusBadge.textContent = "";
           enlistError.style.display = "none";
           enlistModal.classList.add("active");
           gameState = "enlist";
@@ -2977,6 +3435,7 @@
             card.classList.add("selected");
             gameMode = card.getAttribute("data-mode");
             renderLeaderboardTable(gameMode);
+            syncLeaderboardFromCloud(gameMode);
           });
         });
 
@@ -2988,14 +3447,19 @@
           btnToggleLb.addEventListener("click", () => {
             const isExpanded = lbContent.classList.toggle("expanded");
             if (lbToggleText) lbToggleText.textContent = isExpanded ? "Close ▴" : "Ranks ▾";
-            if (isExpanded) renderLeaderboardTable(activeLbCategory);
+            if (isExpanded) {
+              renderLeaderboardTable(activeLbCategory);
+              syncLeaderboardFromCloud(activeLbCategory);
+            }
           });
         }
 
         document.querySelectorAll(".lb-tab-btn").forEach(btn => {
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
-            renderLeaderboardTable(btn.getAttribute("data-cat"));
+            const cat = btn.getAttribute("data-cat");
+            renderLeaderboardTable(cat);
+            syncLeaderboardFromCloud(cat);
           });
         });
 
@@ -3008,6 +3472,24 @@
         document.getElementById("btnKeyboardToggle").addEventListener("click", toggleVirtualKeyboard);
         document.getElementById("btnHideKeyboard").addEventListener("click", toggleVirtualKeyboard);
 
+        function verifyAndSyncOnCloudReady() {
+          if (hasSavedProfile && window.TypeStrikeCloud) {
+            window.TypeStrikeCloud.claimUniqueName(operativeProfile.name, myClaimedNames).then((res) => {
+              if (!res.ok && res.reason === "TAKEN") {
+                hasSavedProfile = false;
+                document.getElementById("titleModal").classList.remove("active");
+                enlistInput.value = "";
+                enlistCharCount.textContent = "0 / 14";
+                enlistError.textContent = `* "${operativeProfile.name}" is already claimed by another player. Enter a unique Call-Sign.`;
+                enlistError.style.display = "block";
+                enlistModal.classList.add("active");
+                gameState = "enlist";
+              }
+            });
+          }
+          syncLeaderboardFromCloud(activeLbCategory);
+        }
+
         if (loadOperativeProfile()) {
           enlistModal.classList.remove("active");
           document.getElementById("titleModal").classList.add("active");
@@ -3019,9 +3501,16 @@
           gameState = "enlist";
         }
 
+        if (window.TypeStrikeCloud) {
+          verifyAndSyncOnCloudReady();
+        } else {
+          window.addEventListener("TypeStrikeCloudReady", verifyAndSyncOnCloudReady, { once: true });
+        }
+
         renderLeaderboardTable("arcade");
         requestAnimationFrame(gameLoop);
       })();
     </script>
+    <script type="module" src="/src/accuracyChart.tsx"></script>
   </body>
 </html>

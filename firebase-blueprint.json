@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "Operative": {
+      "title": "Operative",
+      "description": "Unique globally claimed operative call-sign ensuring no two users can share the same name.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 14,
+          "pattern": "^[A-Z0-9_]{2,14}$",
+          "description": "Unique normalized uppercase operative call-sign."
+        },
+        "ownerHash": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{16,64}$",
+          "description": "Client-derived SHA-256 ownership hash."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the call-sign was claimed."
+        }
+      },
+      "required": ["name", "ownerHash", "createdAt"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Best score entry per unique operative and game mode.",
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["arcade", "time-attack", "code", "home-row"],
+          "description": "Game mode identifier."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 14,
+          "pattern": "^[A-Z0-9_]{2,14}$",
+          "description": "Unique uppercase operative call-sign."
+        },
+        "ownerHash": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{16,64}$",
+          "description": "Ownership hash matching the operative claim."
+        },
+        "score": {
+          "type": "number",
+          "description": "Best score achieved in this mode."
+        },
+        "wpm": {
+          "type": "number",
+          "description": "Best words-per-minute achieved."
+        },
+        "acc": {
+          "type": "number",
+          "description": "Accuracy percentage (0-100)."
+        },
+        "time": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^[0-9]{2}:[0-9]{2}$",
+          "description": "Formatted survival or run duration (MM:SS)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest score update."
+        }
+      },
+      "required": ["mode", "name", "ownerHash", "score", "wpm", "acc", "time", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/operatives/{callSign}": {
+      "schema": { "$ref": "#/entities/Operative" },
+      "description": "Global unique operative call-sign registry keyed by normalized uppercase name."
+    },
+    "/leaderboards/{entryId}": {
+      "schema": { "$ref": "#/entities/LeaderboardEntry" },
+      "description": "Global mode leaderboard entries keyed by {mode}_{callSign}."
+    }
+  }
+}

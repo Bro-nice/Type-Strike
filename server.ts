@@ -30,6 +30,9 @@ async function setupServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.resolve(__dirname, "dist");
+    app.get("/firebase-applet-config.json", (_req, res) => {
+      res.sendFile(path.resolve(__dirname, "firebase-applet-config.json"));
+    });
     app.use(express.static(distPath));
     app.get("*", (_req, res) => {
       res.sendFile(path.resolve(distPath, "index.html"));
